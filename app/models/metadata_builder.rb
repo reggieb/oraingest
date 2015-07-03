@@ -1,3 +1,5 @@
+require 'vocabulary/ora'
+
 class MetadataBuilder
 
   attr_accessor :model
@@ -56,13 +58,6 @@ class MetadataBuilder
       params.except!(:storageAgreement)
     end
 
-    # Remove blank assertions for rights activity and build
-    if params.has_key?(:license) || params.has_key?(:rights)
-      buildRightsActivity(params)
-      params.except!(:license)
-      params.except!(:rights)
-    end
-
     #remove_blank_assertions for publication activity and build
     if params.has_key?(:publication)
       buildPublicationActivity(params[:publication])
@@ -110,6 +105,14 @@ class MetadataBuilder
     if params.has_key?(:titularActivity)
       buildTitularActivity(params[:titularActivity])
       params.except!(:titularActivity)
+    end
+
+    # Remove blank assertions for rights activity and build
+    #NOTE: do this after building creation activity (need author roles)!!!
+    if params.has_key?(:license) || params.has_key?(:rights)
+      buildRightsActivity(params)
+      params.except!(:license)
+      params.except!(:rights)
     end
 
     #Remove blank assertions for validity date and build
@@ -171,15 +174,23 @@ class MetadataBuilder
         #TODO: Rather than assuming first workflow, select first workflow with identifier MediatedSubmission
         params[0][:id] = model.workflows.first.rdf_subject.to_s
       end
+      if params[0].has_key?(:involves) && params[0][:involves] == "false" && model.doi_requested?
+        params[0] = params[0].except(:involves)
+        events = model.workflows.first.involves.reject{|event| event.include?(Sufia.config.doi_event)}
+        model.workflows.first.involves = events
+      end
       if params[0].has_key?(:entries_attributes)
         # Validate entries is array
         params[0][:entries_attributes] = normalizeParams(params[0][:entries_attributes])
-        if params[0][:entries_attributes][0][:status].nil? || params[0][:entries_attributes][0][:status].empty? || model.workflows.first.current_status == params[0][:entries_attributes][0][:status]
-          params[0] = params[0].except(:entries_attributes)
+        if (params[0][:entries_attributes][0].has_key?(:status) &&
+          !params[0][:entries_attributes][0][:status].blank? &&
+          Sufia.config.workflow_status.include?(params[0][:entries_attributes][0][:status]) &&
+          model.workflows.first.current_status != params[0][:entries_attributes][0][:status])
+            # Set creator to user logged in
+            params[0][:entries_attributes][0][:creator] = [depositor]
+            params[0][:entries_attributes][0][:date] = [Time.now.to_s]
         else
-          # Set creator to user logged in
-          params[0][:entries_attributes][0][:creator] = [depositor]
-          params[0][:entries_attributes][0][:date] = [Time.now.to_s]
+          params[0] = params[0].except(:entries_attributes)
         end
       end
       if params[0].has_key?(:emailThreads_attributes)
@@ -264,6 +275,16 @@ class MetadataBuilder
         end
         model.license.build(lsp)
         ag.push("info:fedora/#{model.id}#license")
+      end
+    end
+    if model.creation.first && model.creation.first.creator
+      unless params.has_key?(:rightsHolder)
+        params[:rightsHolder] = []
+      end
+      model.creation[0].creator.each do |creator|
+        if creator.role.any? and creator.role.include?(RDF::ORA.copyrightHolder)
+          params[:rightsHolder].push(creator.agent.first.id)
+        end
       end
     end
     if params.has_key?(:rights)
@@ -490,6 +511,9 @@ class MetadataBuilder
         c1['id'] = b2
         #c1[:agent] = b1
         c1[:type] = RDF::PROV.Association
+        if c1.has_key?(:role) && c1[:role].is_a?(Array) && c1[:role].any?
+          c1[:role].reject{|v| v.nil? || v.empty?}
+        end
         model.creation[0].creator.build(c1)
         model.creation[0].creator[c1_index].agent = nil
         model.creation[0].creator[c1_index].agent.build(agent)
@@ -532,6 +556,9 @@ class MetadataBuilder
         c1['id'] = b2
         #c1[:agent] = b1
         c1[:type] = RDF::PROV.Association
+        if c1.has_key?(:role) && c1[:role].is_a?(Array) && c1[:role].any?
+          c1[:role].reject{|v| v.nil? || v.empty?}
+        end
         model.titularActivity[0].titular.build(c1)
         model.titularActivity[0].titular[c1_index].agent = nil
         model.titularActivity[0].titular[c1_index].agent.build(agent)

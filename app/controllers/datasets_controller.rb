@@ -87,7 +87,6 @@ class DatasetsController < ApplicationController
     @pid = Sufia::Noid.noidify(SecureRandom.uuid)
     @pid = Sufia::Noid.namespaceize(@pid)
     @dataset = Dataset.new
-    @doi = @dataset.doi(mint=true)
     @files = []
     @agreement = DatasetAgreement.new
     @agreement.title = "Agreement for #{@pid}"
@@ -105,11 +104,10 @@ class DatasetsController < ApplicationController
     unless Sufia.config.next_workflow_status.keys.include?(@dataset.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
     end
-    if @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+    unless Sufia.config.user_edit_status.include?(@dataset.workflows.first.current_status)
       authorize! :review, params[:id]
     end
     @pid = params[:id]
-    @doi = @dataset.doi(mint=true)
     @files = contents
     if @files.any?
       unless @dataset.medium.any? && @dataset.medium.include?(Sufia.config.data_medium["Digital"])
@@ -166,7 +164,7 @@ class DatasetsController < ApplicationController
     unless Sufia.config.next_workflow_status.keys.include?(@dataset.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
     end
-    if @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+    unless Sufia.config.user_edit_status.include?(@dataset.workflows.first.current_status)
        authorize! :review, params[:id]
     end
     @dataset.delete_dir(force=true)
@@ -334,11 +332,6 @@ class DatasetsController < ApplicationController
   end
 
   def add_metadata(dataset_params, redirect_field)
-    if !@dataset.workflows.nil? && !@dataset.workflows.first.entries.nil?
-      old_status = @dataset.workflows.first.current_status
-    else
-      old_status = nil
-    end
     # find or create the dataset agreement, if included in the params
     if dataset_params.has_key?(:hasAgreement) or dataset_params.has_key?(:hasRelatedAgreement)
       @@dataset_agreement, created = add_agreement(dataset_params)
@@ -350,15 +343,13 @@ class DatasetsController < ApplicationController
     end
     # Update params
     MetadataBuilder.new(@dataset).build(dataset_params, contents, current_user.user_key)
-    if @dataset.medium.first != Sufia.config.data_medium["Digital"] && contents.any?
+    if @dataset.medium.first != Sufia.config.data_medium["Digital"] && !contents.empty?
       @dataset.medium = [Sufia.config.data_medium["Digital"]]
     end
     if @dataset_agreement
       @dataset.hasRelatedAgreement = @dataset_agreement
     end
-    if old_status != @dataset.workflows.first.current_status
-      WorkflowPublisher.new(@dataset).perform_action(current_user.user_key)
-    end
+    WorkflowPublisher.new(@dataset).perform_action(current_user)
     respond_to do |format|
       if @dataset.save
         format.html { redirect_to edit_dataset_path(@dataset), notice: 'Dataset was successfully updated.', flash: { redirect_field: redirect_field } }
@@ -473,22 +464,6 @@ class DatasetsController < ApplicationController
   def s_type
     Solrizer.solr_name("desc_metadata__agreementType", :symbol)
   end
-
-  #def filter_not_mine 
-  #  "{!lucene q.op=AND #{depositor}:-#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine
-  #  "{!lucene q.op=AND #{depositor}:#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine_draft
-  #  "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{workflow_status}:Draft #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine_not_draft
-  #  "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} -#{workflow_status}:Draft #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
 
   def filter_relevant_agreement
     # All people including the data steward should be listed in the contributor, if allowed to contribute

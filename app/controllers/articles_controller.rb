@@ -93,7 +93,7 @@ class ArticlesController < ApplicationController
     unless Sufia.config.next_workflow_status.keys.include?(@article.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Article)
     end
-    if @article.workflows.first.current_status != "Draft" && @article.workflows.first.current_status !=  "Referred"
+    unless Sufia.config.user_edit_status.include?(@article.workflows.first.current_status)
       authorize! :review, params[:id]
     end
     @pid = params[:id]
@@ -154,7 +154,7 @@ class ArticlesController < ApplicationController
     unless Sufia.config.next_workflow_status.keys.include?(@article.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to delete while record is being migrated!", :read, Article)
     end
-    if @article.workflows.first.current_status != "Draft" && @article.workflows.first.current_status !=  "Referred"
+    unless Sufia.config.user_edit_status.include?(@article.workflows.first.current_status)
        authorize! :review, params[:id]
     end
     @article.destroy
@@ -227,9 +227,13 @@ class ArticlesController < ApplicationController
   end
 
   def process_file(file)
-    #Sufia::GenericFile::Actions.create_content(@article, file, file.original_filename, datastream_id, current_user)
+    current_title = @article.title
     datastream_id = @article.mint_datastream_id()
     @article.add_file(file, datastream_id, file.original_filename)
+    # Do not replace title with filename when empty
+    unless @article.title == current_title
+      @article.title = current_title
+    end
     save_tries = 0
     begin
       @article.save!
@@ -288,15 +292,8 @@ class ArticlesController < ApplicationController
   end
 
   def add_metadata(article_params, redirect_field)
-    if !@article.workflows.nil? && !@article.workflows.first.entries.nil?
-      old_status = @article.workflows.first.current_status
-    else
-      old_status = nil
-    end
     MetadataBuilder.new(@article).build(article_params, contents, current_user.user_key)
-    if old_status != @article.workflows.first.current_status
-      WorkflowPublisher.new(@article).perform_action(current_user.user_key)
-    end
+    WorkflowPublisher.new(@article).perform_action(current_user)
     respond_to do |format|
       if @article.save
         if can? :review, @article
@@ -365,11 +362,11 @@ class ArticlesController < ApplicationController
   end
 
   def filter_mine_draft
-    "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{workflow_status}:Draft"
+    "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{workflow_status}:#{Sufia.config.draft_status}"
   end
 
   def filter_mine_not_draft
-    "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} -#{workflow_status}:Draft"
+    "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} -#{workflow_status}:#{Sufia.config.draft_status}"
   end
 
   def sort_field

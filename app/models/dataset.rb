@@ -106,11 +106,11 @@ class Dataset < ActiveFedora::Base
   end
 
   def is_url?(location)
-    match = location =~ /\A#{URI::regexp}\z/
-    unless match
+    if location =~ URI::regexp(['http', 'https'])
+      return true
+    else
       return false
     end
-    return true
   end
 
   def is_on_disk?(location)
@@ -178,12 +178,18 @@ class Dataset < ActiveFedora::Base
     self.class.model_name.to_s
   end
 
+  def update_datastream_location(dsid, location)
+    opts = self.datastream_opts(dsid)
+    opts["dsLocation"] = location
+    self.datastreams[dsid].content = opts.to_json
+  end
+
   private
   
   def initialize_submission_workflow
     if self.workflows.empty?  
       wf = self.workflows.build(identifier:"MediatedSubmission")
-      wf.entries.build(status:"Draft", date:Time.now.to_s)
+      wf.entries.build(status:Sufia.config.draft_status, date:Time.now.to_s)
     end
   end
 
