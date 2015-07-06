@@ -11,8 +11,13 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  devise :remote_user_authenticatable, :database_authenticatable, :registerable,
+  if Rails.env.production?
+    devise :remote_user_authenticatable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+  else
+    devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+  end
 
   # Setup accessible (or protected) attributes for your model
   #attr_accessible :email, :password, :password_confirmation, :remember_me
@@ -26,10 +31,12 @@ class User < ActiveRecord::Base
   end
 
   def user_info
-    c = Qa::Authorities::Cud.new
-    ans = c.search(user_key, 'sso_username_exact')
-    if !ans.nil? && !ans[0].nil? && ans[0]['sso_username'] == user_key
-      return ans[0]
+    if Rails.env.production?
+      c = Qa::Authorities::Cud.new
+      ans = c.search(user_key, 'sso_username_exact')
+      if !ans.nil? && !ans[0].nil? && ans[0]['sso_username'] == user_key
+        return ans[0]
+      end
     end
     return nil
   end
