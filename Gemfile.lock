@@ -429,6 +429,7 @@ DEPENDENCIES
   font-awesome-sass-rails
   god
   jbuilder (~> 1.2)
+  jettywrapper (~> 1.5.0)
   jquery-rails
   jquery-validation-rails
   kaminari
@@ -449,3 +450,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicode
   unicorn
+
+BUNDLED WITH
+   1.10.5
