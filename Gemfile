@@ -79,6 +79,10 @@ group :development, :test do
   gem 'timecop', '~> 0.7.3'
 end
 
+group :development do
+  gem 'meta_request'
+end
+
 gem 'simplecov', :require => false, :group => :test
 gem 'coveralls', :require => false, :group => :test
 
