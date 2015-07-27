@@ -7,6 +7,10 @@ rvm:
 before_script:
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
+  - mysql -e 'CREATE DATABASE hydra_dev;'
+  - mysql -e 'CREATE DATABASE hydra_test;'
+  - mysql -e 'GRANT ALL ON hydra_dev.* TO hydraDeveloper@localhost IDENTIFIED BY 'password';'
+  - mysql -e 'GRANT ALL ON hydra_test.* TO hydraTester@localhost IDENTIFIED BY 'password';'
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
 
