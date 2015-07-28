@@ -38,7 +38,6 @@ group :doc do
 end
 
 gem 'sufia', "~> 3.7.2"
-#gem 'sufia'
 gem 'kaminari'
 gem 'jettywrapper', "~> 1.5.0"
 
@@ -50,11 +49,6 @@ gem 'font-awesome-sass-rails'
 # Use unicorn as the app server
 gem 'unicorn'
 
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 
 gem "bootstrap-sass"
 gem "devise"
@@ -72,7 +66,6 @@ group :development, :test do
   gem "rspec-rails", '~>3.2.0'
   #gem 'jettywrapper', "~> 1.5.0"
   gem 'chronic'
-  #gem "jettywrapper"
   gem "factory_girl_rails", "~> 4.2.1"
   gem 'capybara', '~>2.4.0'
 #  gem "debugger"
@@ -80,7 +73,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'meta_request'
+  gem 'meta_request' #needed for RailsPanel Chrome plugin
 end
 
 gem 'simplecov', :require => false, :group => :test
