@@ -16,7 +16,8 @@ before_install:
   #     automake libtool bison pkg-config libffi-dev gawk
 
 install:
-  # -
+  - sudo service apache2 start
+  - sudo service tomcat7 start
 
 
 
