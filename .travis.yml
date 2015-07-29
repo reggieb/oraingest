@@ -6,7 +6,7 @@ rvm:
 
 before_install:
   - sudo apt-get update -qq
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
+  # - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
   - sudo apt-get install -qq >
       build-essential byacc zlib1g-dev libssl-dev libbz2-dev libgdbm-dev
       tomcat7 tomcat7-admin vim links screen libapr1-dev libaprutil1-dev
