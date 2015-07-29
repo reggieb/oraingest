@@ -6,7 +6,7 @@ rvm:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
-  - mysql -e "GRANT ALL ON fedora3.* TO hydraTester@localhost IDENTIFIED BY 'password'"
+  - mysql -e "GRANT ALL ON hydra_test.* TO hydraTester@localhost IDENTIFIED BY 'password'"
 
 before_script:
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
