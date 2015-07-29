@@ -11,11 +11,13 @@ before_install:
   - sudo apt-get update -qq
   - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
   - sudo apt-get install -qq >
-      build-essential byacc zlib1g-dev curl libssl-dev  
-      tomcat7 tomcat7-admin vim links screen mysql-server mysql-client libmysqlclient-dev
-      libapache2-mod-proxy-html libapache2-webauth 
-      libreadline6-dev libyaml-dev autoconf libgdbm-dev libncurses5-dev
+      build-essential byacc zlib1g-dev libssl-dev libbz2-dev libgdbm-dev
+      tomcat7 tomcat7-admin vim links screen libapr1-dev libaprutil1-dev
+      libapache2-mod-proxy-html libapache2-webauth libncurses5-dev
+      libreadline6-dev libyaml-dev autoconf libgdbm-dev
       automake libtool bison pkg-config libffi-dev gawk
+
+
 
 before_script:
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
@@ -23,7 +25,7 @@ before_script:
   - cp ./.travis.database.yml ./config/database.yml
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
-  - bundle exec rake ora:travis:build
+  # - bundle exec rake ora:travis:build
 
 gemfile:
   - Gemfile
