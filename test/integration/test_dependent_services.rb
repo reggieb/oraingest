@@ -23,8 +23,13 @@ class TestDependentServices < Test::Unit::TestCase
 
   def test_apache_is_running
     stdin, stdout, stderr = Open3.popen3('sudo service apache2 status')
-    assert(stderr.read.empty?)
+    assert_not_nil(stdout.read.match /apache2 is running/)
   end
+
+  def test_tomcat_is_running
+    stdin, stdout, stderr = Open3.popen3('sudo service tomcat7 status')
+    assert_not_nil(stdout.read.match /Tomcat servlet engine is running/)
+  end  
 
   def test_solr_is_running
     assert_not_nil(@port, "ENV['SOLR_PORT'] expected to be not nil!")
