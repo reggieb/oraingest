@@ -24,19 +24,31 @@ install:
 before_script:
   # install SOLR
   # - wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
-  - wget http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
-  - sudo service tomcat7 stop
-  - sudo mkdir /opt/solr
-  - tar xzvf solr-4.10.2.tgz 
-  - sudo cp solr-4.10.2/dist/solr-4.10.2.war /opt/solr/solr.war
-  - sudo cp -r solr-4.10.2/example/solr/* /opt/solr/
-  - sudo cp solr-4.10.2/example/multicore/solr.xml /opt/solr/
-  - sudo cp -r /opt/solr/collection1/ /opt/solr/core_production
-  - sudo cp -r /opt/solr/collection1 /opt/solr/core_test
-  - sudo mv /opt/solr/collection1 /opt/solr/core_development
-  - sudo rm /opt/solr/zoo.cfg
-  - sudo rm -r /opt/solr/bin/
-  - sudo vim /opt/solr/core_*/core.properties 
+  # - wget http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
+  # - sudo service tomcat7 stop
+  # - sudo mkdir /opt/solr
+  # - tar xzvf solr-4.10.2.tgz 
+  # - sudo cp solr-4.10.2/dist/solr-4.10.2.war /opt/solr/solr.war
+  # - sudo cp -r solr-4.10.2/example/solr/* /opt/solr/
+  # - sudo cp solr-4.10.2/example/multicore/solr.xml /opt/solr/
+  # - sudo cp -r /opt/solr/collection1/ /opt/solr/core_production
+  # - sudo cp -r /opt/solr/collection1 /opt/solr/core_test
+  # - sudo mv /opt/solr/collection1 /opt/solr/core_development
+  # - sudo rm /opt/solr/zoo.cfg
+  # - sudo rm -r /opt/solr/bin/
+  # # edit core.properties
+  # - sed -i ‘s/collection1/production/’ /opt/solr/core_production/core.properties
+  # - sed -i ‘s/collection1/development/’ /opt/solr/core_development/core.properties
+  # - sed -i ‘s/collection1/test/’ /opt/solr/core_test/core.properties
+  # # copy libraries needed for Solr
+  # - sudo mkdir /opt/solr/lib
+  # - sudo cp -r solr-4.10.2/example/lib/* /opt/solr/lib/
+  # - sudo cp -r solr-4.10.2/contrib/ /opt/solr/lib/
+  # - sudo rm -rf /opt/solr/lib/contrib/dataimporthandler
+  # - sudo rm -rf /opt/solr/lib/contrib/dataimporthandler-extras/
+  # - sudo rm -rf /opt/solr/lib/contrib/map-reduce/
+  # - sudo rm -rf /opt/solr/lib/contrib/uima/
+  # - sudo rm -rf /opt/solr/lib/contrib/velocity/
   # sd s
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
@@ -46,7 +58,6 @@ before_script:
   - bundle update rake
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
-  # - bundle exec rake ora:travis:build
   - pwd
 
 gemfile:
@@ -62,7 +73,10 @@ branches:
     - dev
 
 script: 
-    - bundle exec rake integration_testing 
+  - bundle exec rake ora:travis:build
+
+after_success:  
+  - bundle exec rake integration_testing 
 
 after_failure:
   - "mysql -e 'show databases;'"
