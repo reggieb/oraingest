@@ -1,64 +1,14 @@
 language: ruby
 cache: bundler
-sudo: required
+sudo: false
 rvm:
   - 2.1
 
-before_install:
-  - sudo apt-get update -qq
-  # # - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
-  - sudo apt-get install -qq >
-      build-essential byacc zlib1g-dev libssl-dev libbz2-dev libgdbm-dev
-      apache2 apache2-utils
-      tomcat7 tomcat7-admin vim links screen libapr1-dev libaprutil1-dev
-      libapache2-mod-proxy-html libapache2-webauth libncurses5-dev
-  #     libreadline6-dev libyaml-dev autoconf libgdbm-dev
-  #     automake libtool bison pkg-config libffi-dev gawk
-
-install:
-  - sudo service apache2 start
-  # - sudo service tomcat7 restart
-
-
-
 before_script:
-  # install SOLR
-  # - wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
-  # - wget http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
-  # - sudo service tomcat7 stop
-  # - sudo mkdir /opt/solr
-  # - tar xzvf solr-4.10.2.tgz 
-  # - sudo cp solr-4.10.2/dist/solr-4.10.2.war /opt/solr/solr.war
-  # - sudo cp -r solr-4.10.2/example/solr/* /opt/solr/
-  # - sudo cp solr-4.10.2/example/multicore/solr.xml /opt/solr/
-  # - sudo cp -r /opt/solr/collection1/ /opt/solr/core_production
-  # - sudo cp -r /opt/solr/collection1 /opt/solr/core_test
-  # - sudo mv /opt/solr/collection1 /opt/solr/core_development
-  # - sudo rm /opt/solr/zoo.cfg
-  # - sudo rm -r /opt/solr/bin/
-  # # edit core.properties
-  # - sed -i ‘s/collection1/production/’ /opt/solr/core_production/core.properties
-  # - sed -i ‘s/collection1/development/’ /opt/solr/core_development/core.properties
-  # - sed -i ‘s/collection1/test/’ /opt/solr/core_test/core.properties
-  # # copy libraries needed for Solr
-  # - sudo mkdir /opt/solr/lib
-  # - sudo cp -r solr-4.10.2/example/lib/* /opt/solr/lib/
-  # - sudo cp -r solr-4.10.2/contrib/ /opt/solr/lib/
-  # - sudo rm -rf /opt/solr/lib/contrib/dataimporthandler
-  # - sudo rm -rf /opt/solr/lib/contrib/dataimporthandler-extras/
-  # - sudo rm -rf /opt/solr/lib/contrib/map-reduce/
-  # - sudo rm -rf /opt/solr/lib/contrib/uima/
-  # - sudo rm -rf /opt/solr/lib/contrib/velocity/
-  # sd s
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
-  - cp ./.travis.database.yml ./config/database.yml
-  # ruby stuff
-  - gem install rake
-  - bundle update rake
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
-  - pwd
 
 gemfile:
   - Gemfile
@@ -66,22 +16,9 @@ gemfile:
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-    - SOLR_PORT=8389 
 
 branches:
   only:
     - dev
 
-script: 
-  - bundle exec rake ora:travis:build
-
-after_success:  
-  - bundle exec rake integration_testing 
-
-after_failure:
-  - "mysql -e 'show databases;'"
-  - "cat ./config/database.yml"
-  - "echo $RAILS_ENV"
-  - "bundle exec rake --version"
-
-
+script: bundle exec rake ora:travis:build
