@@ -12,21 +12,28 @@ class TestDependentServices < Test::Unit::TestCase
     when "development"
       @port = 8080
     when "test"
-      assert_not_nil(ENV['SOLR_PORT'], "ENV['SOLR_PORT'] expected to be not nil!")
       @port = ENV['SOLR_PORT']
     end
   end
 
+  def test_java_is_installed
+    stdin, stdout, stderr = Open3.popen3('java -version')
+    refute(stderr.read.empty?)
+  end
+
+  def test_apache_is_running
+    stdin, stdout, stderr = Open3.popen3('sudo service apache2 status')
+    assert(stderr.read.empty?)
+  end
+
   def test_solr_is_running
+    assert_not_nil(@port, "ENV['SOLR_PORT'] expected to be not nil!")
     uri = URI.parse("http://127.0.0.1:#{@port}/solr/#/#{Rails.env}")
     res = Net::HTTP.get_response(uri)
     assert(res.is_a? Net::HTTPOK)
   end
 
-  def apache_is_running
-  	stdin, stdout, stderr = Open3.popen3('sudo service apache2 status')
-  	assert(stderr.read.empty?)
-  end
+
 
   def teardown
   end
