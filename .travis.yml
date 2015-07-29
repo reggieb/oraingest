@@ -17,6 +17,7 @@ before_install:
 
 install:
   - sudo service apache2 start
+  - sudo service tomcat7 status
   - sudo service tomcat7 start
 
 
