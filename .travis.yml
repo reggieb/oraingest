@@ -21,10 +21,10 @@ install:
 
 
 
-
 before_script:
   # install SOLR
-  - wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
+  # - wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
+  - wget http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
   - sudo service tomcat7 stop
   - sudo mkdir /opt/solr
   - tar xzvf solr-4.10.2.tgz 
