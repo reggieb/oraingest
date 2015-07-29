@@ -10,11 +10,10 @@ env:
 before_install:
   - sudo apt-get update -qq
   - mysql -e 'CREATE DATABASE IF NOT EXISTS hydra_test;' -uroot
-  - sudo apt-get install -y >
-      git build-essential gcc byacc zlib1g-dev curl libssl-dev openssl libruby 
-      git-core sqlite3 libsqlite3-dev openjdk-7-jdk openjdk-7-jre tomcat7
-      tomcat7-admin vim links screen mysql-server mysql-client libmysqlclient-dev
-      apache2 apache2-utils libapache2-mod-proxy-html libapache2-webauth 
+  - sudo apt-get install -qq >
+      build-essential byacc zlib1g-dev curl libssl-dev  
+      tomcat7 tomcat7-admin vim links screen mysql-server mysql-client libmysqlclient-dev
+      libapache2-mod-proxy-html libapache2-webauth 
       libreadline6-dev libyaml-dev autoconf libgdbm-dev libncurses5-dev
       automake libtool bison pkg-config libffi-dev gawk
 
