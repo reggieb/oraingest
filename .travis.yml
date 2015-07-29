@@ -17,15 +17,33 @@ before_install:
 
 install:
   - sudo service apache2 start
-  - sudo service tomcat7 restart
+  # - sudo service tomcat7 restart
 
 
 
 
 before_script:
+  # install SOLR
+  - wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
+  - sudo service tomcat7 stop
+  - sudo mkdir /opt/solr
+  - tar xzvf solr-4.10.2.tgz 
+  - sudo cp solr-4.10.2/dist/solr-4.10.2.war /opt/solr/solr.war
+  - sudo cp -r solr-4.10.2/example/solr/* /opt/solr/
+  - sudo cp solr-4.10.2/example/multicore/solr.xml /opt/solr/
+  - sudo cp -r /opt/solr/collection1/ /opt/solr/core_production
+  - sudo cp -r /opt/solr/collection1 /opt/solr/core_test
+  - sudo mv /opt/solr/collection1 /opt/solr/core_development
+  - sudo rm /opt/solr/zoo.cfg
+  - sudo rm -r /opt/solr/bin/
+  - sudo vim /opt/solr/core_*/core.properties 
+  # sd s
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
   - cp ./.travis.database.yml ./config/database.yml
+  # ruby stuff
+  - gem install rake
+  - bundle update rake
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
   # - bundle exec rake ora:travis:build
