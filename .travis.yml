@@ -21,7 +21,7 @@ gemfile:
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-    - TEST_JETTY_PORT=8389 
+    - TEST_JETTY_PORT=8080 
 
 branches:
   only:
