@@ -33,8 +33,10 @@ before_script:
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
-  - sudo service apache2 start
-  - sudo service tomcat7 start
+  # - sudo service apache2 start
+  # - sudo service tomcat7 start
+  - cat  /etc/tomcat7/server.xml
+
 
 gemfile:
   - Gemfile
