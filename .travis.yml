@@ -9,6 +9,8 @@ before_install:
 
 before_script:
   - cp ./.travis.database.yml ./config/database.yml
+  - pwd
+  - ls
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
   # - gem install rake
