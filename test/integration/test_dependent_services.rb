@@ -9,14 +9,16 @@ class TestDependentServices < Test::Unit::TestCase
   def setup
 
     case Rails.env
+
     when "development"
       @port = 8080
     when "test"
-      @port = ENV['SOLR_PORT']
+      @port = ENV['TEST_JETTY_PORT']
     end
   end
 
   def test_java_is_installed
+  	
     stdin, stdout, stderr = Open3.popen3('java -version')
     refute(stderr.read.empty?)
   end
