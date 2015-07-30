@@ -1,23 +1,23 @@
-# development:
-#   jetty_port: 8080
-#   java_opts:
-#     - "-XX:MaxPermSize=128m" 
-#     - "-Xmx256m"
+development:
+  jetty_port: 8080
+  java_opts:
+    - "-XX:MaxPermSize=128m" 
+    - "-Xmx256m"
 
-# test:
-#   jetty_port: 8983
-#   java_opts:
-#     - "-XX:MaxPermSize=128m" 
-#     - "-Xmx256m"
-
-# production:
-#   jetty_port: 8983
-#   java_opts:
-#     - "-XX:MaxPermSize=128m" 
-#     - "-Xmx256m"
-
-default:
+test:
   jetty_port: 8983
   java_opts:
     - "-XX:MaxPermSize=128m" 
-    - "-Xmx256m"    
+    - "-Xmx256m"
+
+production:
+  jetty_port: 8983
+  java_opts:
+    - "-XX:MaxPermSize=128m" 
+    - "-Xmx256m"
+
+# default:
+#   jetty_port: 8983
+#   java_opts:
+#     - "-XX:MaxPermSize=128m" 
+#     - "-Xmx256m"    
