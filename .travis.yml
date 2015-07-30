@@ -9,14 +9,12 @@ before_install:
 
 before_script:
   - cp ./.travis.database.yml ./config/database.yml
-  - pwd
-  - ls
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
   # - gem install rake
   # - bundle update rake
-  - bundle exec rake db:setup
-  - bundle exec rails g hydra:jetty
+  # - bundle exec rake db:setup
+  # - bundle exec rails g hydra:jetty
   - env
 
 gemfile:
@@ -31,11 +29,11 @@ branches:
   only:
     - dev
 
-script: bundle exec rake ora:travis:build
+# script: bundle exec rake ora:travis:build
 
 
 # after_success:  
-  - bundle exec rake integration_testing 
+  # - bundle exec rake integration_testing 
 
 after_failure:
   - "mysql -e 'show databases;'"
