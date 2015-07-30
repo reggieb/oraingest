@@ -30,8 +30,8 @@ branches:
 script: bundle exec rake ora:travis:build
 
 
-after_success:  
-  - bundle exec rake integration_testing 
+# after_success:  
+#   - bundle exec rake integration_testing 
 
 after_failure:
   - "mysql -e 'show databases;'"
