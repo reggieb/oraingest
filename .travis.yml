@@ -45,5 +45,7 @@ env:
     - JETTY_PORT=8181
 
 script: 
-    - bundle exec rake ora:travis:build
-    # - bundle exec rake integration_testing 
+  - bundle exec rake ora:travis:build
+
+after_success:  
+  - bundle exec rake integration_testing 

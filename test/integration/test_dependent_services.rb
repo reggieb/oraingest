@@ -13,12 +13,12 @@ class TestDependentServices < Test::Unit::TestCase
     when "development"
       @port = 8080
     when "test"
-      @port = ENV['TEST_JETTY_PORT']
+      @port = ENV['JETTY_PORT']
     end
   end
 
   def test_java_is_installed
-  	
+
     stdin, stdout, stderr = Open3.popen3('java -version')
     refute(stderr.read.empty?)
   end
