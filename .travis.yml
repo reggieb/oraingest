@@ -45,7 +45,5 @@ env:
     - JETTY_PORT=8181
 
 script: 
-  - netstat -anp | grep ruby 
   - bundle exec rake ora:travis:build
-  - netstat -anp | grep ruby 
   # - bundle exec rake integration_testing 
