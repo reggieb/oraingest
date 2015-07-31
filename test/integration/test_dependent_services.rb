@@ -13,7 +13,8 @@ class TestDependentServices < Test::Unit::TestCase
     when "development"
       @port = 8080
     when "test"
-      @port = ENV['JETTY_PORT']
+      @port = 8983
+      # @port = ENV['JETTY_PORT']
     end
 
     puts "================= port used: #{@port} ==============="
