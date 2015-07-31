@@ -34,16 +34,22 @@ class TestDependentServices < Test::Unit::TestCase
   # def test_tomcat_is_running
   #   stdin, stdout, stderr = Open3.popen3('sudo service tomcat7 status')
   #   assert_not_nil(stdout.read.match /Tomcat servlet engine is running/)
-  # end  
+  # end
 
-  def test_solr_is_running
-    uri = URI.parse("http://127.0.0.1:#{@port}/solr/#/#{Rails.env}")
-    res = Net::HTTP.get_response(uri)
-    assert(res.is_a? Net::HTTPOK)
-  end
+  # def test_solr_is_running
+  #   uri = URI.parse("http://127.0.0.1:#{@port}/solr/#/#{Rails.env}")
+  #   res = Net::HTTP.get_response(uri)
+  #   assert(res.is_a? Net::HTTPOK)
+  # end
 
-  def test_fedora_is_running
-    uri = URI.parse("http://127.0.0.1:#{@port}/solr/#/#{Rails.env}")
+  # def test_fedora_is_running
+  #   uri = URI.parse("http://127.0.0.1:#{@port}/solr/#/#{Rails.env}")
+  #   res = Net::HTTP.get_response(uri)
+  #   assert(res.is_a? Net::HTTPOK)
+  # end
+
+  def test_rails_is_running
+    uri = URI.parse("http://127.0.0.1:3000")
     res = Net::HTTP.get_response(uri)
     assert(res.is_a? Net::HTTPOK)
   end
