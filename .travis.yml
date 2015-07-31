@@ -42,7 +42,7 @@ gemfile:
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-    - JETTY_PORT = 8983
+    - JETTY_PORT=8983
 
 script: 
     - bundle exec rake ora:travis:build
