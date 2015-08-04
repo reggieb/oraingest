@@ -64,16 +64,15 @@ gem 'rt-client'
 
 group :development, :test do
   gem "rspec-rails", '~>3.2.0'
-  #gem 'jettywrapper', "~> 1.5.0"
   gem 'chronic'
   gem "factory_girl_rails", "~> 4.2.1"
   gem 'capybara', '~>2.4.0'
-#  gem "debugger"
   gem 'timecop', '~> 0.7.3'
 end
 
 group :development do
   gem 'meta_request' #needed for RailsPanel Chrome plugin
+  gem 'travis' #for Travis-CI cli integration
 end
 
 gem 'simplecov', :require => false, :group => :test
