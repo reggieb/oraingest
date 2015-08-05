@@ -23,7 +23,7 @@
 
 language: ruby
 cache: bundler
-sudo: aflse
+sudo: false
 rvm:
   - 2.1
 
@@ -45,4 +45,3 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  # - bundle exec rake integration_testing 
