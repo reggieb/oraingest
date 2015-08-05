@@ -52,7 +52,6 @@ describe ArticlesController do
         expect(response).to render_template('articles/show')
       end
     end
-  end
 
     context 'user not logged in' do
       it 'returns an error' do
