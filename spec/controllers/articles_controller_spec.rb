@@ -1,5 +1,4 @@
 require 'rails_helper'
-require "net/http"
 
 
 describe ArticlesController do
@@ -7,9 +6,6 @@ describe ArticlesController do
   before do
     @user = FactoryGirl.find_or_create(:reviewer)
     allow_any_instance_of(User).to receive(:groups).and_return([])
-     uri = URI.parse("http://127.0.0.1:3000")
-    res = Net::HTTP.get_response(uri)
-    puts "==================  #{res.code} ================= "
   end
 
   describe '#index' do
