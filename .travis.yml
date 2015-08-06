@@ -4,19 +4,6 @@ branches:
   only:
     - dev
 
-# # script: bundle exec rake ora:travis:build
-
-
-# # after_success:  
-#   # - bundle exec rake integration_testing 
-
-# after_failure:
-#   - "mysql -e 'show databases;'"
-#   - "cat ./config/database.yml"
-#   - "echo $RAILS_ENV"
-#   - "bundle exec rake --version"
-
-
 language: ruby
 cache: bundler
 sudo: false

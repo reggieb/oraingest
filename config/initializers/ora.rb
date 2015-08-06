@@ -188,6 +188,8 @@ Sufia.config do |config|
 
   config.embargo_reasons = {
     "article" => {
+      "Publisher's requirement" => "Publishers requirement", 
+      "Legal or ethical reasons" => "Legal or ethical reasons",
       "Commercial confidentiality" => "Commercial confidentiality",
       "Publication pending" => "Publication pending",
       "Conditional access only" => "Conditional access only",
@@ -198,6 +200,8 @@ Sufia.config do |config|
       "Patent pending"  => "Patent pending"
     },
     "dataset" => {
+      "Publisher's requirement" => "Publishers requirement", 
+      "Legal or ethical reasons" => "Legal or ethical reasons",
       "Commercial confidentiality" => "Commercial confidentiality",
       "Publication pending" => "Publication pending", 
       "Conditional access only" => "Conditional access only",
@@ -374,7 +378,11 @@ Sufia.config do |config|
   config.review_dashboard_status = config.workflow_status.reject{|s| s == config.draft_status}
 
   config.rt_server = 'https://support.bodleian.ox.ac.uk/'
-  config.rt_queue = 'oraq'
+  if Rails.env.production?
+    config.rt_queue = 'ora.system'
+  else
+    config.rt_queue = 'oraq'
+  end
 
   config.email_options = {
     # A workflow status
@@ -421,14 +429,19 @@ Sufia.config do |config|
 
   # Map hostnames onto Google Analytics tracking IDs
   # config.google_analytics_id = 'UA-99999999-1'
- 
+  
   # Specify the Fedora pid prefix:
   # config.id_namespace = 'sufia'
   
   config.contact_email = 'ora@bodleian.ox.ac.uk'
   config.from_email = 'no-reply@bodleian.ox.ac.uk'
-  config.data_root_dir = '/data/'
-  config.cud_base_url = 'http://10.0.0.203'
+  if Rails.env.production?
+    config.data_root_dir = '/data/oradeposit/'
+    config.cud_base_url = 'http://10.0.0.203'
+  else
+    config.data_root_dir = "/data/oradeposit/"
+    config.cud_base_url = "http://dams-auth.bodleian.ox.ac.uk"
+  end
 
   # For migrating records
   config.ora_publish_queue_name = 'ora_publish'

@@ -16,6 +16,7 @@ rails_server.log
 /tmp
 
 #Ignore all of the cookies files
+.rtclientrc
 /rt_cookies/*
 
 #Ignore config files

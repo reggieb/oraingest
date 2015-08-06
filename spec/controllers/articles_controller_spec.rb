@@ -1,8 +1,6 @@
 require 'rails_helper'
 
-
 describe ArticlesController do
-  include Devise::TestHelpers
   before do
     @user = FactoryGirl.find_or_create(:reviewer)
     allow_any_instance_of(User).to receive(:groups).and_return([])
