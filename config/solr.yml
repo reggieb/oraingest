@@ -8,5 +8,5 @@ test: &TEST
 cucumber:
   <<: *TEST
 production:
-  url: "http://localhost:8983/solr/#/production"
+  url: <%= "http://127.0.0.1:#{ENV['JETTY_PORT']}/solr/#/production" %>
 
