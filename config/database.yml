@@ -23,6 +23,6 @@ production:
   adapter: mysql2
   database: hydra
   username: hydraUser
-  password: WqahYveGRwNYZN6z
+  password: <%= ENV['MYSQL_PWD'] %>
   pool: 5
   timeout: 5000

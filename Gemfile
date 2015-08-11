@@ -49,7 +49,6 @@ gem 'font-awesome-sass-rails'
 # Use unicorn as the app server
 gem 'unicorn'
 
-
 gem "bootstrap-sass"
 gem "devise"
 gem "devise-guests", "~> 0.3"
@@ -64,16 +63,24 @@ gem 'rt-client'
 
 group :development, :test do
   gem "rspec-rails", '~>3.2.0'
-  #gem 'jettywrapper', "~> 1.5.0"
   gem 'chronic'
   gem "factory_girl_rails", "~> 4.2.1"
   gem 'capybara', '~>2.4.0'
-#  gem "debugger"
   gem 'timecop', '~> 0.7.3'
+  gem 'pry' #a powerful shell alternative to IRB
+  gem 'awesome_print' #stylish pretty print.
+  gem 'hirb' #tabular collection output
+  gem 'pry-rails' #pry in the Rails console
+  gem 'pry-doc' #to browse Ruby source
+  gem 'pry-byebug' #debugger
+  gem 'pry-stack_explorer' #navigate the call stack and frames
 end
 
 group :development do
   gem 'meta_request' #needed for RailsPanel Chrome plugin
+  gem 'better_errors' #better error pages for Rails
+  gem 'binding_of_caller' #Retrieve the binding of a method's caller
+  gem 'travis' #for Travis-CI cli integration
 end
 
 gem 'simplecov', :require => false, :group => :test

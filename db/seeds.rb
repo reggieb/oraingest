@@ -12,6 +12,6 @@ unless Rails.env == 'production'
   User.create(email: 'qa@bodleian.com', password: 'password')
   User.create(email: 'test@bodleian.com', password: 'password')
   User.create(email: 'test2@bodleian.com', password: 'password')
-  User.create(email: 'qa2@bodleian.com', password: 'password')
+  User.create(email: 'archivist1@example.com', password: 'password')
 
 end

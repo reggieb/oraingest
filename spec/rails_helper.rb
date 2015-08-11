@@ -58,4 +58,3 @@ module FactoryGirl
     tmpl.class.send("find_by_#{by}".to_sym, tmpl.send(by)) || FactoryGirl.create(handle)
   end
 end
-
