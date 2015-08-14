@@ -15,8 +15,8 @@ class GenericFile < ActiveFedora::Base
   has_metadata name: 'descMetadata',     type: GenericFileRdfDatastream
   has_metadata name: 'workflowMetadata', type: WorkflowRdfDatastream
 
-  has_attributes [:workflows, :workflows_attributes], datastream: 'workflowMetadata', multiple: true
-  has_attributes GenericFileRdfDatastream.fields,     datastream: 'descMetadata',     multiple: true
+  has_attributes :workflows, :workflows_attributes,  datastream: 'workflowMetadata', multiple: true
+  has_attributes *GenericFileRdfDatastream.fields,   datastream: 'descMetadata',     multiple: true
   
   has_and_belongs_to_many :authors,           property: :has_author,           class_name: 'Person'
   has_and_belongs_to_many :contributors,      property: :has_contributor,      class_name: 'Person'
