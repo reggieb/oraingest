@@ -82,10 +82,18 @@ shared_examples_for "doi_methods" do
   end
 
   describe '#doi_requested?' do
+    
     context 'when workflows are present' do
-      it 'returns true'
-
+      
+      it 'returns true' do
+        pending('Need to find way to add a workflow to the model before this can be tested')
+        # I've tried stubbing model.workflows, and creating a new Workflow with 
+        #   workflow = Workflow.new RDF::Graph.new
+        # But keep getting ActiveFedora error: Expected the value of http://vocab.ox.ac.uk/workflow/schema#workflow to be an RDF object
+        expect(model.doi_requested?).to be true
+      end
     end
+    
     context 'when workflows are not present' do
       it 'returns false' do
         expect(model.doi_requested?).to be false
