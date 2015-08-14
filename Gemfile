@@ -81,6 +81,7 @@ group :development do
   gem 'better_errors' #better error pages for Rails
   gem 'binding_of_caller' #Retrieve the binding of a method's caller
   gem 'travis' #for Travis-CI cli integration
+  gem 'htmlbeautifier' #allows beautifying ERB files
 end
 
 gem 'simplecov', :require => false, :group => :test
