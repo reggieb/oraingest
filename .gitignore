@@ -106,6 +106,9 @@ capybara-*.html
 rerun.txt
 pickle-email-*.html
 
+# dataset file storage location
+/data
+
 # TODO Comment out these rules if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
 config/secrets.yml
