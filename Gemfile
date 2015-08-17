@@ -84,11 +84,10 @@ group :development do
 end
 
 group :test do
-  gem 'webmock'
-  gem 'mock_redis'
+  gem 'webmock'     # Used in tests so external file location does not need to be present
+  gem 'mock_redis'  # Used so redis does not need to be present during tests
+  gem 'simplecov', :require => false
+  gem 'coveralls', :require => false
 end
-
-gem 'simplecov', :require => false, :group => :test
-gem 'coveralls', :require => false, :group => :test
 
 gem 'god'
