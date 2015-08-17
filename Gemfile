@@ -85,6 +85,7 @@ end
 
 group :test do
   gem 'webmock'
+  gem 'mock_redis'
 end
 
 gem 'simplecov', :require => false, :group => :test
