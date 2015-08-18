@@ -195,7 +195,7 @@ shared_examples_for "doi_methods" do
   describe '#remote_uri_for' do
     it 'returns the remote uri' do
       resolver_url = Sufia.config.doi_credentials[:resolver_url]
-      expected = URI.parse URI.join(resolver_url, 'identifier')
+      expected = URI.parse File.join(resolver_url, 'identifier')
       expect(model.remote_uri_for('identifier')).to eq(expected)
     end
   end
