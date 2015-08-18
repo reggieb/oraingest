@@ -82,14 +82,30 @@ shared_examples_for "doi_methods" do
   end
 
   describe '#doi_requested?' do
+    # Need to use dummy objects so as to mock presence of workflows.
+    let(:workflow) do
+      Struct.new 'Workflow' do
+        def involves
+          [Sufia.config.doi_event]
+        end
+      end
+    end
+    
+    let(:dummy_model) do
+      Struct.new 'DummyModel' do
+        include DoiMethods
+        
+        def workflows
+          @workflows ||= []
+        end
+      end
+    end
+    let(:model) { dummy_model.new }
     
     context 'when workflows are present' do
       
       it 'returns true' do
-        pending('Need to find way to add a workflow to the model before this can be tested')
-        # I've tried stubbing model.workflows, and creating a new Workflow with 
-        #   workflow = Workflow.new RDF::Graph.new
-        # But keep getting ActiveFedora error: Expected the value of http://vocab.ox.ac.uk/workflow/schema#workflow to be an RDF object
+        model.workflows << workflow.new
         expect(model.doi_requested?).to be true
       end
     end
@@ -158,10 +174,29 @@ shared_examples_for "doi_methods" do
   end
 
   describe '#normalize_doi' do
-    it 'returns the normalized doi'
+    it 'returns the normalized doi with prefix' do
+      expect(model.normalize_doi(:foo)).to eq('doi:foo')
+    end
+    
+    it 'returns value if with_prefix = false' do
+      expect(model.normalize_doi(:foo, false)).to eq('foo')
+    end
+    
+    it 'returns value without prefix if with_prefix = false' do
+      expect(model.normalize_doi('doi:foo', false)).to eq('foo')
+    end
+    
+    it 'returns value without url' do
+      resolver_url = Sufia.config.doi_credentials[:resolver_url]
+      expect(model.normalize_doi("#{resolver_url}foo")).to eq('doi:foo')
+    end
   end
 
   describe '#remote_uri_for' do
-    it 'returns the remote uri'
+    it 'returns the remote uri' do
+      resolver_url = Sufia.config.doi_credentials[:resolver_url]
+      expected = URI.parse URI.join(resolver_url, 'identifier')
+      expect(model.remote_uri_for('identifier')).to eq(expected)
+    end
   end
 end
