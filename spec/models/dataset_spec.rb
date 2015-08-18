@@ -131,7 +131,7 @@ describe Dataset do
 
   end
 
-  describe 'mint datastream id' do
+  describe '.mint_datastream_id' do
     before do
       @dataset = Dataset.new
       @dsid = @dataset.mint_datastream_id
@@ -144,7 +144,7 @@ describe Dataset do
 
   end
 
-  describe 'get the class name' do
+  describe '.model_klass' do
     before do
       @dataset = Dataset.new
     end
@@ -155,15 +155,15 @@ describe Dataset do
 
   end
 
-  describe 'test if url' do
+  describe '.is_url' do
     before do
       @dataset = Dataset.new
-      @url1 = 'https://databank.ora.ox.ac.uk/sandbox/datasets/1935724d-48d4-40d3-b407-22dda3d3d352/EEBO-TCP Phase 1 XML Files TEI P3 (2001).zip'
-      @url2 = 'http://10.0.0.173/sandbox/datasets/d46cb6d7-abbf-4057-9bde-22eba7812434/master.log'
-      @url3 = 'ftp://jkorpela@alfa.hut.fi/m/fs/lai/lai/LK/lk/jkorpela/.plan'
+      @url1 = 'https://example.com'
+      @url2 = 'http://example.com'
+      @url3 = 'ftp://example.com'
     end
 
-    it 'returns the class name' do
+    it 'returns true if http or https and a valid url' do
       expect(@dataset.is_url?(@url1)).to be true
       expect(@dataset.is_url?(@url2)).to be true
       expect(@dataset.is_url?(@url3)).to be false
