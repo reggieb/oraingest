@@ -107,10 +107,6 @@ module ORA
       return create_response(response)
     end
 
-    def response_good?(code)
-      return code >= 200 && code < 300
-    end
-
     def create_response(response)
       return {'code' => response.code, 'description' => response.description, 'body' => response.body}
     end
