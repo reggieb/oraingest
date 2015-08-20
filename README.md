@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/bodleian/oraingest/badge.svg?branch=dev)](https://coveralls.io/r/bodleian/oraingest?branch=dev)
 [![Dependency Status](https://gemnasium.com/bodleian/oraingest.svg)](https://gemnasium.com/bodleian/oraingest)
 [![Code Climate](https://codeclimate.com/github/bodleian/oraingest/badges/gpa.svg)](https://codeclimate.com/github/bodleian/oraingest)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/bodleian/oraingest/blob/master/docs/LICENSE.txt)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/bodleian/oraingest/blob/master/docs/LICENCE.txt)
 
 This is a [Sufia](https://github.com/projecthydra/sufia)-based [Hydra Head](http://projecthydra.org)
 
