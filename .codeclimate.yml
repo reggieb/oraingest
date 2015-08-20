@@ -1,14 +1,14 @@
 engines:
   rubocop:
-    enabled: true
+    enabled: false
   golint:
     enabled: false
   gofmt:
     enabled: false
   eslint:
-    enabled: true
+    enabled: false
   csslint:
-    enabled: true
+    enabled: false
 ratings:
    paths:
    - app/**
