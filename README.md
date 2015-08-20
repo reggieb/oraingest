@@ -42,3 +42,11 @@ brew install ffmpeg --with-libvpx --with-libvorbis
 
 #### On Ubuntu Linux
 See https://ffmpeg.org/trac/ffmpeg/wiki/UbuntuCompilationGuide
+
+Testing
+-------
+If you are running the tests locally, you need to pass the port used by jetty
+to host fedora and solr, to the environment variable JETTY_PORT. For example:
+
+    JETTY_PORT=8080 rspec
+
