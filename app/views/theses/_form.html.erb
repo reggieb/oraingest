@@ -109,31 +109,17 @@
         </div>
       </div>
 
-     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 5', sub_text: 'Making your thesis available' } %>
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 5', sub_text: 'Funders, rights and licences' } %>
 
     </section>
+
+
 
 
     <section class="form-step">
       <div class="content-box padding-0">
         <div class="content-box-header">
-          5. Making your thesis available
-        </div>
-        <div class="padding-25 no-pad-top no-pad-bottom">
-          <%= render partial: "admin_fields_edit", :locals => { :f => f, :thesis => @thesis } %>
-        </div>
-        <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
-        <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
-      </div>
-
-        <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 6', sub_text: 'Funders, rights and licences' } %>
-    </section>
-
-
-    <section class="form-step">
-      <div class="content-box padding-0">
-        <div class="content-box-header">
-          6. Funders, rights and licences
+          5. Funders, rights and licences
         </div>
         <div class="padding-25 no-pad-top no-pad-bottom">
           <%= render partial: 'shared/funding_activity_fields_edit', :locals => { :f => f, :funding => @thesis.funding, :required => false } %>
@@ -155,8 +141,28 @@
       </div>
 
 
-     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 6', sub_text: 'Making your thesis available' } %>
     </section>
+
+
+
+    <section class="form-step">
+      <div class="content-box padding-0">
+        <div class="content-box-header">
+          6. Making your thesis available
+        </div>
+        <div class="padding-25 no-pad-top no-pad-bottom">
+          <%= render partial: "admin_fields_edit", :locals => { :f => f, :thesis => @thesis } %>
+        </div>
+        <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
+        <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
+      </div>
+
+        <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+    </section>
+
+
+
 
 
     <% if can? :review, :all %>
