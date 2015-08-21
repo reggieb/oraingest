@@ -19,15 +19,9 @@
       </div>
     </div>
   </div>
-  <nav class="form-nav">
-    <div class="form-nav-prev"></div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 2</strong> - About your award
-      </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-    </div>
-  </nav>
+
+   <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 2', sub_text: 'About your award' } %>
+
 </section>
 
 <%= form_for @thesis, :html => {:id => "new_record_fields", :class => "ora-validate-form"} do |f| %>
@@ -85,17 +79,7 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 3</strong> - About you
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+      <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 3', sub_text: 'About you' } %>
 
     </section>
 
@@ -110,17 +94,7 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 4</strong> - Related publications
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+      <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 4', sub_text: 'Related publications' } %>
 
     </section>
 
@@ -135,17 +109,7 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 5</strong> - Making your thesis available
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 5', sub_text: 'Making your thesis available' } %>
 
     </section>
 
@@ -162,20 +126,7 @@
         <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <% if can? :review, :all %>
-            <div class="form-nav-next">
-              <div class="float-left">
-                <strong>Continue to Step 6</strong> - Funders, rights and licences
-              </div>
-              <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-            </div>
-        <% end %>
-      </nav>
-
+        <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 6', sub_text: 'Funders, rights and licences' } %>
     </section>
 
 
@@ -203,20 +154,8 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <% if can? :review, :all %>
-          <div class="form-nav-next">
-            <div class="float-left">
-              <strong>Continue to Step 7</strong> - Review workflow
-            </div>
-            <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-          </div>
-        <% end %>
-      </nav>
 
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
     </section>
 
 
