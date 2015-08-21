@@ -58,10 +58,9 @@ class ThesesController < ApplicationController
   end
 
   def create
-    # binding.pry
     @pid = params[:pid]
     @thesis = Thesis.find_or_create(@pid)
-    thesis.awardingBody = 'University of Oxford'
+    @thesis.awardingBody = 'University of Oxford'
     @thesis.apply_permissions(current_user)
     if params.has_key?(:files)
       create_from_upload(params)
