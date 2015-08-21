@@ -9,12 +9,6 @@
 </div>
 
 <div class="fieldset">
-  <p class="small">Awarding institution</p>
-  <% institution = @thesis.awardingBody.first || 'University of Oxford' %>
-  <%= f.text_field :awardingBody, value: institution, style: 'width: 60%', data: {"progress" => "discoverability"} %>
-</div>
-
-<div class="fieldset">
   <p class="small">Year leave to supplicate granted</p>
   <%= f.text_field :dateOfAward, value: @thesis.dateOfAward.first, style: 'width: 60%', data: {"progress" => "discoverability"} %>
 </div>
