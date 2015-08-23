@@ -1,8 +1,6 @@
 
 $(document).ready(function() {
-    // $("#thesis_degreeName").on('click', function(){
-    // alert("thesis_degreeName clicked");
-    // });
+
 
     $('#thesis_degreeName').change(
         function() {
@@ -32,17 +30,23 @@ $(document).ready(function() {
             $('#thesis_degreeType').val(degree_type);
         });
 
-    $('#thesis_hasThirdPartyCopyrightMaterial_yes').change(
+    $('#thesis_hasThirdPartyCopyrightMaterial_yes').click(
         function() {
-            if (this.checked && this.value == 'Yes') {
-                alert("test");
-                // note that, as per comments, the 'changed'
-                // <input> will *always* be checked, as the change
-                // event only fires on checking an <input>, not
-                // on un-checking it.
-                // append goes here
-            }
-        });
-
+        	$('#has_copyright_material').removeClass( "hidden-form" );
+        	$('#hasnt_copyright_material').addClass( "hidden-form" );
+            // if (this.checked && this.value == 'Yes') {
+            // note that, as per comments, the 'changed'
+            // <input> will *always* be checked, as the change
+            // event only fires on checking an <input>, not
+            // on un-checking it.
+            // append goes here
+        }
+    );
+    $('#thesis_hasThirdPartyCopyrightMaterial_no').click(
+        function() {
+        	$('#hasnt_copyright_material').removeClass( "hidden-form" );
+        	$('#has_copyright_material').addClass( "hidden-form" );
+        }
+    );
 
 });
