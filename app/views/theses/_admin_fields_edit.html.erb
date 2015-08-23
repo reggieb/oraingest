@@ -1,9 +1,12 @@
 <div class="fieldset">
   <fieldset class="small-text">
-    <%= f.label :dispensationFromConsultation, "Have you applied for dispensation from consultation?", :class=>"control-label reqlabel" %>
+    <%= f.label :dispensationFromConsultation, "Have you applied for or been granted dispensation from consultation?", :class=>"control-label reqlabel" %>
     <label panel="dataset-dispensation">
       <%= f.radio_button :dispensationFromConsultation, "yes", checked: thesis.dispensationFromConsultation.first == "yes", class: "required" %>
       <span></span>Yes
+      <div id="has_dispensation" class="hidden-form">
+        <%= render partial: 'dispensation_yes', locals: { f: f} %>
+      </div>        
     </label>
     <label>
       <%= f.radio_button :dispensationFromConsultation, "no", checked: thesis.dispensationFromConsultation.first == "no", class: "required" %>

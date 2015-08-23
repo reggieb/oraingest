@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
 
@@ -32,8 +31,8 @@ $(document).ready(function() {
 
     $('#thesis_hasThirdPartyCopyrightMaterial_yes').click(
         function() {
-        	$('#has_copyright_material').removeClass( "hidden-form" );
-        	$('#hasnt_copyright_material').addClass( "hidden-form" );
+            $('#has_copyright_material').removeClass("hidden-form");
+            $('#hasnt_copyright_material').addClass("hidden-form");
             // if (this.checked && this.value == 'Yes') {
             // note that, as per comments, the 'changed'
             // <input> will *always* be checked, as the change
@@ -44,9 +43,34 @@ $(document).ready(function() {
     );
     $('#thesis_hasThirdPartyCopyrightMaterial_no').click(
         function() {
-        	$('#hasnt_copyright_material').removeClass( "hidden-form" );
-        	$('#has_copyright_material').addClass( "hidden-form" );
+            $('#hasnt_copyright_material').removeClass("hidden-form");
+            $('#has_copyright_material').addClass("hidden-form");
         }
     );
+
+    $('#thesis_dispensationFromConsultation_yes').click(
+        function() {
+            $('#has_dispensation').removeClass("hidden-form");
+        }
+    );
+    $('#thesis_dispensationFromConsultation_no').click(
+        function() {
+            $('#has_dispensation').addClass("hidden-form");
+        }
+    );
+
+    $('#thesis_dispensationPeriodYears').click(
+        function() {
+            $('#dispensation_years_count').html(this.value);
+        }
+    );
+
+    $('#thesis_dispensationPeriodMonths').click(
+        function() {
+            $('#dispensation_months_count').html(this.value);
+        }
+    );
+
+
 
 });

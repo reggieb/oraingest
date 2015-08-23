@@ -78,5 +78,9 @@ module RDF
     property :dateOfAward
     property :dispensationFromConsultation
     property :hasThirdPartyCopyrightMaterial
+    property :dispensationEndDate
+    property :dispensationPeriodYears
+    property :dispensationPeriodMonths
+    
   end
 end

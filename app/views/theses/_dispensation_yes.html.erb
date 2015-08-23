@@ -1,0 +1,11 @@
+<div class="fieldset">
+ <label panel="dataset-dispensation-period">
+
+      What is the dispensation end date? <%= f.date_field :dispensationEndDate, style: 'width: 20%' %>
+      What is the dispensation period? </br>
+      <span id="dispensation_years_count">1</span> Years
+      <%= f.range_field(:dispensationPeriodYears, value: 1, in: 1..15) %> </br>
+      <span id="dispensation_months_count">0</span> Months
+      <%= f.range_field(:dispensationPeriodMonths, value: 0, in: 0..11) %> </br>
+
+</div>
