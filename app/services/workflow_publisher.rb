@@ -12,7 +12,7 @@ class WorkflowPublisher
     wf_id = 'MediatedSubmission'
     # Mint a doi or check a DOI if doi_requested? and in review status
     mint_and_check_doi
-    # send email
+
     send_email(wf_id, current_user) if Rails.env.production?
     # publish record
     publish_record(wf_id, current_user)
