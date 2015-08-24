@@ -92,7 +92,6 @@ coverage
 .ruby-gemset
 
 ### Rails ###
-*.rbc
 capybara-*.html
 .rspec
 /log
