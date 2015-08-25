@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.5.0.rc1 - 2015/08/25
+----------------------
+
+- Thesis form improvements
+- Rationalise onto one branch
+- Integrate code climate
+
 1.4.0 - 2015/07/13
 ------------------
 - Added support for new object type - thesis 
