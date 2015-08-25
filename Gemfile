@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+#ruby=2.1.5
+
 # Bundle edge Rails instead: 
 # gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
@@ -81,6 +83,7 @@ group :development do
   gem 'better_errors' #better error pages for Rails
   gem 'binding_of_caller' #Retrieve the binding of a method's caller
   gem 'travis' #for Travis-CI cli integration
+  gem 'htmlbeautifier' #allows beautifying ERB files
 end
 
 group :test do
