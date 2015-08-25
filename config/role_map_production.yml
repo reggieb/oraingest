@@ -1,3 +1,4 @@
+uva-only:
 reviewer:
   - bodl1072 #Jason
   - bodl2421 #David Watson
@@ -9,5 +10,7 @@ reviewer:
   - bodl2469 #Michael
   - zool0982 #Bhavana
   - bodl0881 #David Tomkins
+financier:
+  - bodl2469 #Michael
 public:
 
