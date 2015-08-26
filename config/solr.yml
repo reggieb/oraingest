@@ -8,5 +8,5 @@ test: &TEST
 cucumber:
   <<: *TEST
 production:
-  url: "http://127.0.0.1:8983/solr/#/production"
+  url: "http://127.0.0.1:8080/solr/#/production"
 
