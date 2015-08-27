@@ -1,8 +1,10 @@
 <div class="fieldset">
   <p class="small">Type of degree</p>
   <%= f.select( :degreeName, options_for_select(Sufia.config.thesis_degree_types, selected: @thesis.degreeName.first), { include_blank: 'Select a degree type' }, data: {"progress" => "discoverability"}   ) %>
-  <p class="small">Level of degree</p>
-  <%= f.text_field :degreeType, readonly: true, style: 'width: 20%' %>
+  <div class="hidden-form"> 
+	  <p class="small">Level of degree</p>
+		<%= f.text_field :degreeType, readonly: true, style: 'width: 20%' %>
+  </div>
 </div>
 
 
