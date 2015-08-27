@@ -9,12 +9,9 @@
 
 unless Rails.env.production?
 
-  emails = [
-    'reviewer1@example.com',
-    'qa@bodleian.com',
-    'test@bodleian.com',
-    'test2@bodleian.com',
-    'archivist1@example.com'
+  emails = [=
+    'depositor@bodleian.ox.ac.uk',
+    'reviewer@bodleian.ox.ac.uk'
   ]
   
   emails.each do |email|   
@@ -22,6 +19,5 @@ unless Rails.env.production?
       user.password = 'password'
     end  
   end
-
 end
 
