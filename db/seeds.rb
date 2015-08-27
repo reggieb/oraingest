@@ -9,7 +9,7 @@
 
 unless Rails.env.production?
 
-  emails = [=
+  emails = [
     'depositor@bodleian.ox.ac.uk',
     'reviewer@bodleian.ox.ac.uk'
   ]
