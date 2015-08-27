@@ -7,11 +7,21 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
+unless Rails.env.production?
 
-unless Rails.env == 'production'
-  User.create(email: 'qa@bodleian.com', password: 'password')
-  User.create(email: 'test@bodleian.com', password: 'password')
-  User.create(email: 'test2@bodleian.com', password: 'password')
-  User.create(email: 'archivist1@example.com', password: 'password')
-  User.create(email: 'reviewer1@example.com', password: 'password')
+  emails = [
+    'reviewer1@example.com',
+    'qa@bodleian.com',
+    'test@bodleian.com',
+    'test2@bodleian.com',
+    'archivist1@example.com'
+  ]
+  
+  emails.each do |email|   
+    User.find_or_create_by(email: email) do |user|
+      user.password = 'password'
+    end  
+  end
+
 end
+
