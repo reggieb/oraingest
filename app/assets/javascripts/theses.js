@@ -58,6 +58,24 @@ $(document).ready(function() {
             $('#has_dispensation').addClass("hidden-form");
         }
     );
+    $('#thesis_dispensationSelect_end_date').click(
+        function() {
+            $('#has_dispensation_end_date').removeClass("hidden-form");
+            $('#has_dispensation_period').addClass("hidden-form");
+        }
+    );
+    $('#thesis_dispensationSelect_period').click(
+        function() {
+            $('#has_dispensation_end_date').addClass("hidden-form");
+            $('#has_dispensation_period').removeClass("hidden-form");
+        }
+    );
+    $('#thesis_dispensationSelect_permanent').click(
+        function() {
+            $('#has_dispensation_end_date').addClass("hidden-form");
+            $('#has_dispensation_period').addClass("hidden-form");
+        }
+    );    
 
     $('#thesis_dispensationPeriodYears').click(
         function() {

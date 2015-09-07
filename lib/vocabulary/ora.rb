@@ -79,8 +79,11 @@ module RDF
     property :dispensationFromConsultation
     property :hasThirdPartyCopyrightMaterial
     property :dispensationEndDate
-    property :dispensationPeriodYears
+    property :dispensationSelect
+    property :dispensationPeriodStartFromDate
     property :dispensationPeriodMonths
+    property :dispensationPeriodYears
+    property :dispensationPeriodPermanent
     
   end
 end
