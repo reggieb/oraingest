@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.5.0.rc3 - 2015/09/07
+----------------------
+
+- Fix copyright year in footer to be current and dynamic
+- Use correct DOI shoulder in production
+- Various thesis form fixes
+- Tidy up roles in development
+- Add count for number of claimed tickets
+
 1.5.0.rc2 - 2015/08/26
 ----------------------
 
