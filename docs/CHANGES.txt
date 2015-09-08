@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.0.rc4 - 2015/09/08
+----------------------
+
+- Fix thesis form crashing for non reviewers
+
 1.5.0.rc3 - 2015/09/07
 ----------------------
 
