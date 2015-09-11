@@ -72,9 +72,13 @@
       <% end %>
       <% tipTitle = "Catalogue visibility" %>
     <% else %>
-      <% desc = "Select whether the file should be made openly available in ORA, or set an embargo if its
-        not to be made available either for a set period or in perpetuity. You should set this information
-        for each file you upload." %>
+      <% desc = "Select whether the file should be made openly available in
+        ORA, or set an embargo if its not to be made available either for a set
+        period or in perpetuity. You should set this information for each file
+        you upload. For more information regarding open access and default
+        embargoes that are applied to theses files please see the Digital
+        theses and
+        <a href="http://ox.libguides.com/after_deposit">ORA LibGuide</a>." %>
       <% tipTitle = "File availability" %>
     <% end %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => tipTitle , :tipDescription => desc } %>
