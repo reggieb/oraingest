@@ -1,8 +1,8 @@
-<!-- <%= @response %> -->
-<!-- <%= @response['facet_counts']['facet_fields'] %> -->
-<!-- facet_counts"=>{"facet_queries"=>{}, "facet_fields" -->
 <% @page_title = application_name + " Review Submissions" %>
 <h2 class="heading1">Review dashboard</h2>
+<div class="colfull">
+	<h3> <%= @number_items_found %> items retrieved </h3>
+</div>
 <div class="col col1of6">
 	<aside class="filters">
 		<ul>
@@ -14,25 +14,14 @@
 	</aside>
 </div>
 <div class="col col5of6">
-	<article class="review-article">
-		<div class="content">
-			<p style="background-color: blue"> hdsksdhf kjdfhgkjfdgh</p>
-             <aside class="info"></aside>			
-		</div>
-		<div class="buttons"></div>
-	</article>
-	<article class="review-article">
-		<div class="content">
-			<p style="background-color: green"> hdsksdhf kjdfhgkjfdgh</p>
-             <aside class="info"></aside>			
-		</div>
-		<div class="buttons"></div>
-	</article>
-	<article class="review-article">
-		<div class="content">
-			<p style="background-color: yellow"> hdsksdhf kjdfhgkjfdgh</p>
-             <aside class="info"></aside>			
-		</div>
-		<div class="buttons"></div>
-	</article>		
+	<% if @result_list %>
+		<% @result_list.each do |item| %>
+			<article class="review-article">
+				<%= render partial: 'article_content', locals: {item: item} %>				
+				<aside class="info"></aside>
+			</div>
+			<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: false} %>
+			</article>
+		<% end %>
+	<% end %>
 </div>
