@@ -1,16 +1,16 @@
-<div class="content">
-					<% status = item['MediatedSubmission_status_ssim'].first %>
-					<% type = item['desc_metadata__type_tesim'].first %>
-					<span class="tag <%= get_status_tag(status) %>"><%= status %></span>
-					<span class="tag <%= get_type_tag(type) %>"><%= type %></span>
-					<div><strong>
-						<%= link_to item['desc_metadata__title_tesim'], articles_path(item['id']) %>
-					</strong></div>
-					<div class="small">
-						<strong>Creator: </strong>
-						<%= item['desc_metadata__creatorName_tesim'] %>
-					</div>
-					<div class="small">
-						<strong>Abstract: </strong>
-						<%= item['desc_metadata__abstract_tesim'] %>
-					</div>	
+<% status = item['MediatedSubmission_status_ssim'].first %>
+<% type = item['desc_metadata__type_tesim'].first %>
+<span class="tag <%= get_status_tag(status) %>"><%= status %></span>
+<span class="tag <%= get_type_tag(type) %>"><%= type %></span>
+<div><strong>
+	<%= link_to trim_text(item['desc_metadata__title_tesim'].first, 100), articles_path(item['id']) %>
+</strong></div>
+<div class="small">
+	<strong>Creator: </strong>
+	<%= item['desc_metadata__creatorName_tesim'].join('; ') %>
+</div>
+<div class="small">
+	<strong>Abstract: </strong>
+	<%= trim_text(item['desc_metadata__abstract_tesim'].first, 300) %>
+</div>
+<%= render partial: 'article_aside', locals: {item: item}  %>

@@ -1,0 +1,25 @@
+<aside class="info">
+	<div class="small">
+		<strong>Depositor: </strong>
+		<%= item['depositor_tesim'].first %>
+	</div>
+	<div class="small">
+		<% date_array = determine_date(item) %>
+		<strong>Date <%= date_array[0].to_s %>: </strong>
+		<%= date_array[1] %>
+	</div>	
+	<div class="small">
+		<strong>Reviewer: </strong>
+		<%= item['MediatedSubmission_current_reviewer_id_ssim'].first %>
+	</div>
+	<div class="small">
+		<strong>RT Ticket: </strong>
+		<% ticket_list = item['MediatedSubmission_all_email_threads_ssim'] %>
+		<% if ticket_list %>
+			<% ticket_list.each do |ticket| %>
+			<%= link_to( ticket, "https://support.bodleian.ox.ac.uk/Ticket/Display.html?id=#{ticket}" ) %>
+			<% end %>
+		<% end %>
+	</div>
+</aside>
+
