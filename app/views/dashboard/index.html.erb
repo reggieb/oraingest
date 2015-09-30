@@ -3,25 +3,27 @@
 <div class="colfull">
 	<h3> <%= @number_items_found %> items retrieved </h3>
 </div>
-<div class="col col1of6">
-	<aside class="filters">
-		<ul>
-			<li>ds sdfd d</li>
-			<li>ds sdfd d</li>
-			<li>ds sdfd d</li>
-			<li>ds sdfd d</li>
-		</ul>
-	</aside>
-</div>
-<div class="col col5of6">
-	<% if @result_list %>
-		<% @result_list.each do |item| %>
+<div class="row">
+	<div class="col col1of6">
+		<aside class="filters">
+			<ul>
+				<li>ds sdfd d</li>
+				<li>ds sdfd d</li>
+				<li>ds sdfd d</li>
+				<li>ds sdfd d</li>
+			</ul>
+		</aside>
+	</div>
+	<div class="col col5of6">
+		<% if @result_list %>
+			<% @result_list.each do |item| %>
 			<article class="review-article">
-				<%= render partial: 'article_content', locals: {item: item} %>				
-				<aside class="info"></aside>
-			</div>
-			<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: false} %>
+				<div class="content">
+				<%= render partial: 'article_content', locals: {item: item} %>
+				</div>
+				<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: !is_item_claimed?(item)} %>
 			</article>
+			<% end %>
 		<% end %>
-	<% end %>
+	</div>
 </div>
