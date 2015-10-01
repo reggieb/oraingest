@@ -1,9 +1,8 @@
 <% @page_title = application_name + " Review Submissions" %>
-<h2 class="heading1">Review dashboard</h2>
-<div class="colfull">
-	<h3> <%= @number_items_found %> items retrieved </h3>
-</div>
+<h2 class="heading2">Review dashboard</h2>
+
 <div class="row">
+		  <%= paginate @result_list, theme: 'blacklight' %>
 	<div class="col col1of6">
 		<aside class="filters">
 			<ul>
@@ -16,14 +15,21 @@
 	</div>
 	<div class="col col5of6">
 		<% if @result_list %>
-			<% @result_list.each do |item| %>
-			<article class="review-article">
-				<div class="content">
-				<%= render partial: 'article_content', locals: {item: item} %>
-				</div>
-				<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: !is_item_claimed?(item)} %>
-			</article>
-			<% end %>
+		<h3 class="heading3"><%= @number_items_found %> Items retrieved</h3>
+		  <table>
+				<% @result_list.each do |item| %>
+					<tr>
+						<article class="review-article">
+							<div class="content">
+							<%= render partial: 'article_content', locals: {item: item} %>
+							</div>
+							<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: !is_item_claimed?(item)} %>
+						</article>
+					</tr>
+				<% end %>
+		  </table>	
+		<% else %>
+			<h3 class="heading3">No Items retrieved</h3>
 		<% end %>
 	</div>
 </div>
