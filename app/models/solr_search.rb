@@ -46,7 +46,6 @@ class SolrSearch
   def search(page)
 
     page = 1 unless page
-    solr_params["facet.limit"].to_i
 
     unless @query
       logger.info ">>> SolrSearch#search, query_hash is nil - defaulting to global search"
