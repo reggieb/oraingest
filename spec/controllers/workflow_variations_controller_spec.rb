@@ -73,7 +73,6 @@ describe 'Workflow Variations' do
           
           post :index
           expect(response).to be_success
-          expect(assigns(:result_set_size)).to eql(editable_results['response']['numFound'])
         end
       end
     end
