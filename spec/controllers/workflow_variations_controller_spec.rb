@@ -40,26 +40,6 @@ describe 'Workflow Variations' do
         sign_in @user
         allow_any_instance_of(User).to receive(:groups).and_return([])
       end
-
-      describe '#index' do
-        before (:each) do
-          get :index, per_page:'100'
-        end
-
-        it 'should be a success' do
-          expect(response).to be_success
-          expect(response).to render_template('dashboard/index')
-        end
-
-        #it 'should return an array of documents I can edit and include Submission status facet' do
-        #  pending 'I need to understand whether this test is valid or not'
-        #  user_results = Blacklight.solr.get 'select', :params=>{:fq=>["edit_access_group_ssim:public OR edit_access_person_ssim:#{@user.user_key}"]}
-        #  expect(assigns(:document_list).count).to eql(user_results['response']['numFound'])
-        #  ['Approved', 'Assigned', 'Draft', 'Escalated', 'Rejected', 'Submitted'] .each do |statuses|
-        #    expect(assigns(:response).facet_fields['MediatedSubmission_status_ssim']).to include(statuses)
-        #  end
-        #end
-      end
     end
     describe 'logged in as archivist' do
       before (:each) do
@@ -67,14 +47,6 @@ describe 'Workflow Variations' do
         allow_any_instance_of(User).to receive(:groups).and_return([])
       end
 
-      describe '#index' do
-        it 'should not show other users content' do
-          editable_results = Blacklight.solr.get 'select', :params=>{:fq=>["edit_access_group_ssim:public OR edit_access_person_ssim:#{@archivist.user_key}"]}
-          
-          post :index
-          expect(response).to be_success
-        end
-      end
     end
   end
 end
