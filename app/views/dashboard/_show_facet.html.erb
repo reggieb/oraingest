@@ -1,0 +1,10 @@
+<li><span><%= facet %></span>
+	<ul>
+		<% constraints.each do |name, count| %>
+		<li>
+			<a class="facet_select" href="#"><%= name %></a>
+			<span class="count"><%= count %></span>
+		</li>
+		<% end %>
+	</ul>
+</li>

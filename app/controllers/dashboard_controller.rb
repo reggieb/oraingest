@@ -18,12 +18,10 @@ class DashboardController < ApplicationController
     @number_items_found =  response['response']['numFound']
 
     if @number_items_found > 0
-      fc = response['facet_counts']['facet_fields']
-      binding.pry
       @result_list = response['response']['docs']
-      d = DashboardItem.new(@result_list[0])
+      @facets = process_facets( response['facet_counts']['facet_fields'] )
     else
-      # TODO deal with error
+      # TODO: deal with error
     end
 
 
@@ -32,10 +30,37 @@ class DashboardController < ApplicationController
 
   private
 
+  # Creates a Hash where the key is the facet and the value is a Hash
+  # containing the facet's constraints
+  #
+  # @param facet_hash [Hash] the Solr-style facet Hash in the {facet [Hash]: 
+  # constraints [Array]} style
+  # @return [Hash] a Hash in the {facet [Hash]: constraints [Hash]} style
   def process_facets(facet_hash)
-    facet_hash.each do |k,v|
+    facets = {}
+    facet_hash.each do |facet, facet_constraints|
+      # Solrium.reverse_lookup(facet)
+      if facet_constraints.size > 0
+        facets[facet] = convert_constraints_array(facet_constraints)
+      end
     end
+    facets
   end
-end
 
-#
+
+  # Converts a Solr-style facet costraints array into a more
+  # meaningful Hash
+  #
+  # @param constraints_arr [Array] a Solr-style facet costraints array
+  # @return [Hash] a Hash in the {constraint_name: count} style
+  def convert_constraints_array(constraints_arr)
+    constraints_hash = {}
+    constraints_arr.each_with_index do |x, idx|
+      if idx.even?
+        constraints_hash[x] = constraints_arr[idx+1]
+      end
+    end
+    constraints_hash
+  end
+
+end

@@ -1,10 +1,6 @@
 class DashboardItem
   include ActiveModel::Model
 
-  #dynamically set attributes
-  # Solrium.each do |nice_name, solr_name|
-  # 	attr_reader nice_name.to_s.downcase.to_sym
-  # end
 
   # any instance variables we want to expose to the world as-is, without
   # any mainpulation

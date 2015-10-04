@@ -1,6 +1,6 @@
 
   # This module is responsible for mapping between Solr-style field names and
-  # sensible attribyte names for our objects and views. Can be used to 
+  # sensible attribute names for our objects and views. Can be used to 
   # quickly initialize classes, e.g. see DashboardItem 
   #
 
@@ -19,14 +19,23 @@ module Solrium
   end
 
 
-  # Gets the Solr field name, given its equivalent readable name
-  # arguments if called repeatedly.
+  # Gets the Solr field name, given its equivalent readable name.
   #
   # @param field [Symbol] the human-readable attribute, e.g. :title
   # @return [String] the corresponding Solr attribute e.g. 
   # "desc_metadata__title_tesim"
-  def self.find(field)
+  def self.lookup(field)
     @hash.fetch(field.to_s.upcase.to_sym)
+  end
+
+
+  # Gets the readable attribute name, given its solr field name.
+  #
+  # @param field [String] the Solr field name, e.g.
+  # "desc_metadata__title_tesim"
+  # @return [Symbol] the corresponding human-readable attribute, e.g. :title
+  def self.reverse_lookup(solr_field)
+    @hash.key(solr_field).to_s.downcase.to_sym
   end
 
   self.add_attr :ID, 'id'
@@ -40,5 +49,6 @@ module Solrium
   self.add_attr :CREATOR, 'desc_metadata__creatorName_tesim'
   self.add_attr :REVIEWER, 'MediatedSubmission_current_reviewer_id_ssim'
   self.add_attr :RT_TICKETS, 'MediatedSubmission_all_email_threads_ssim'
+
 end
 
