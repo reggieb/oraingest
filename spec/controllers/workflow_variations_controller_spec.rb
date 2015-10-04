@@ -40,7 +40,6 @@ describe 'Workflow Variations' do
         sign_in @user
         allow_any_instance_of(User).to receive(:groups).and_return([])
       end
-       
     end
     describe 'logged in as archivist' do
       before (:each) do
@@ -48,7 +47,6 @@ describe 'Workflow Variations' do
         allow_any_instance_of(User).to receive(:groups).and_return([])
       end
 
-      
     end
   end
 end

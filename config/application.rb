@@ -9,6 +9,9 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+# Load application ENV vars and merge with existing ENV vars. Loaded here, we can use values in initializers.
+ENV.update YAML.load_file('config/solr.yml')[Rails.env]
+
 module OraHydra
   class Application < Rails::Application
     

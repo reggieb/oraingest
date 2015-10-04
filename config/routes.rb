@@ -1,4 +1,5 @@
 OraHydra::Application.routes.draw do
+  get "dashboard/index"
   mount Qa::Engine => '/qa'
 
   root :to => "catalog#index"
