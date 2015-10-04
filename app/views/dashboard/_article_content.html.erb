@@ -1,16 +1,16 @@
-<% status = item['MediatedSubmission_status_ssim'].first %>
-<% type = item['desc_metadata__type_tesim'].first %>
+<% status = item.status %>
+<% type = item.type %>
 <span class="tag <%= get_status_tag(status) %>"><%= status %></span>
 <span class="tag <%= get_type_tag(type) %>"><%= type %></span>
 <div><strong>
-	<%= link_to trim_text(item['desc_metadata__title_tesim'].first, 100), articles_path(item['id']) %>
+	<%= link_to item.title, articles_path(item.id) %>
 </strong></div>
 <div class="small">
 	<strong>Creator: </strong>
-	<%= item['desc_metadata__creatorName_tesim'].join('; ') %>
+	<%=item.creator %>
 </div>
 <div class="small">
 	<strong>Abstract: </strong>
-	<%= trim_text(item['desc_metadata__abstract_tesim'].first, 300) %>
+	<%= item.abstract %>
 </div>
 <%= render partial: 'article_aside', locals: {item: item}  %>

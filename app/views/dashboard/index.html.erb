@@ -17,13 +17,14 @@
 		<% if @result_list %>
 		<h3 class="heading3"><%= @number_items_found %> Items retrieved</h3>
 		  <table>
-				<% @result_list.each do |item| %>
+				<% @result_list.each do |solr_doc| %>
+				<% item = DashboardItem.new(solr_doc) %>
 					<tr>
 						<article class="review-article">
 							<div class="content">
 							<%= render partial: 'article_content', locals: {item: item} %>
 							</div>
-							<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: !is_item_claimed?(item)} %>
+							<%= render partial: 'dashboard_item_buttons', locals: {add_claim_button: !item.is_it_claimed?} %>
 						</article>
 					</tr>
 				<% end %>

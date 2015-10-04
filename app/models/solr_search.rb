@@ -1,3 +1,7 @@
+  # This class abstracts the data and logic needed to make a Solr search
+  # query.  
+  #
+
 class SolrSearch
   include ActiveModel::Model
 
@@ -28,6 +32,15 @@ class SolrSearch
     logger.fatal e.message
   end
 
+
+  # Constructs a Solr query argument (q). Will create joined (AND)
+  # arguments if called repeatedly.
+  #
+  # @note method depends on the Solrium module to translate the human
+  # readable key value to its Solr equivalent
+  # @param query_hash [Hash] the query hash in the form of
+  # {human_readable_field_title: value}. E.g. {creator: 'fred'}
+  # @return [String] a valid Solr query value
   def set_query(query_hash)
     if query_hash.is_a?(Hash) && (query_hash.size == 1)
       key = query_hash.keys[0]
@@ -46,7 +59,6 @@ class SolrSearch
   def search(page)
 
     page = 1 unless page
-    solr_params["facet.limit"].to_i
 
     unless @query
       logger.info ">>> SolrSearch#search, query_hash is nil - defaulting to global search"

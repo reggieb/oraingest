@@ -19,8 +19,9 @@ class DashboardController < ApplicationController
 
     if @number_items_found > 0
       fc = response['facet_counts']['facet_fields']
+      binding.pry
       @result_list = response['response']['docs']
-      d = DashboardItem.new(@result_list[0]) 
+      d = DashboardItem.new(@result_list[0])
     else
       # TODO deal with error
     end
@@ -28,6 +29,13 @@ class DashboardController < ApplicationController
 
   end
 
+
+  private
+
+  def process_facets(facet_hash)
+    facet_hash.each do |k,v|
+    end
+  end
 end
 
-# 
+#
