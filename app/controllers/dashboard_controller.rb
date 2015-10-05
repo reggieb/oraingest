@@ -1,27 +1,35 @@
-# FIX: ugly hack to get Solr working with Kaminari
+require 'tempfile'
+
+# FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
   attr_reader :limit_value
 end
 
 class DashboardController < ApplicationController
   def index
-    s = SolrSearch.new
-
+    @solr_connection ||= RSolr.connect url: ENV['url']
+     session[:solr_query_params] ||= {}
 
     if params[:search]
       parsed_search_params = params[:search].rpartition(":")
-      search_field = parsed_search_params[0] #
-      search_value = parsed_search_params[2] #
-    else #default search
-		search_field = :status
-		search_value = 'Claimed'
+      session[:solr_query_params][parsed_search_params[0].to_sym] = parsed_search_params[2]
     end
-    s.set_query search_field, search_value
-    s.set_query :creator, "Joe Pitt-Francis"
+
+    if !params[:search] &&  session[:solr_query_params].empty? #default search
+      session[:solr_query_params][:status] = 'Claimed'
+      session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
+    end
+
+
+    if params[:search_remove]
+    	key_to_delete = params[:search_remove].rpartition(":")[0].to_sym
+		session[:solr_query_params].delete(key_to_delete)
+    end
 
 
 
-    response =  s.search(params[:page])
+    # set_query
+    response = do_search
 
     @enable_search_form = false #stop ora search form appearing
     @number_items_found =  response['response']['numFound']
@@ -37,7 +45,47 @@ class DashboardController < ApplicationController
   end
 
 
+
   private
+
+
+
+  def do_search
+
+  	query = set_query
+    page = 1 unless params[:page]
+
+    unless query
+      logger.info ">>> SolrSearch#search, query_hash is nil - defaulting to global search"
+      query = "*:*"
+    end
+
+    @solr_connection.paginate page, 10, "select", params: {
+      q: query,
+      facet: true,
+      'facet.field' => SolrFacets.values,
+      'facet.limit' => 20,
+      wt: "ruby"
+    }
+
+  end
+
+
+
+  def set_query
+  	idx, query = 0, ""
+    session[:solr_query_params].each do |k, v|
+      field = Solrium.lookup(k.to_sym) #get solr field name
+      txt = v.gsub(%r{\s}, '+')
+      if idx > 0
+        query = "#{query} AND #{field}:#{txt}"
+      else
+        query = "#{field}:#{txt}"
+      end
+      idx = idx + 1
+    end
+    query
+  end
 
   # Creates a Hash where the key is the facet and the value is a Hash
   # containing the facet's constraints

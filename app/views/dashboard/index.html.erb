@@ -23,9 +23,16 @@
 
 				</ul>
 				<h4 class="heading4">Filters</h4>
-				<span class="label label-success">Primary
-				  <i class="fa fa-remove fa-lg" href="#"></i>
-				  </span>
+				<% session[:solr_query_params].each do |field, value| %>
+					<span class="label label-primary">
+						<%= field.to_s.capitalize %>
+						<a href="?search_remove=<%= field.to_s %>:<%= value %>">
+					  <i class="fa fa-remove fa-sm"></i>
+					  </a>
+				    </span> 
+				    </br>
+				    </br>
+				  <% end %>
 
 			</aside>
 		</div>
