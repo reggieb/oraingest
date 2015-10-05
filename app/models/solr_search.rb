@@ -1,6 +1,6 @@
-  # This class abstracts the data and logic needed to make a Solr search
-  # query.  
-  #
+# This class abstracts the data and logic needed to make a Solr search
+# query.
+#
 
 class SolrSearch
   include ActiveModel::Model
@@ -26,18 +26,30 @@ class SolrSearch
   # @param query_hash [Hash] the query hash in the form of
   # {human_readable_field_title: value}. E.g. {creator: 'fred'}
   # @return [String] a valid Solr query value
-  def set_query(query_hash)
-    if query_hash.is_a?(Hash) && (query_hash.size == 1)
-      key = query_hash.keys[0]
-      field = Solrium.lookup(key) #get solr field name
-      txt = query_hash[key].gsub(%r{\s}, '+')
-      if @joined_queries == 0
-        @query = "#{field}:#{txt}"
-      elsif @joined_queries > 0
-        @query = "#{@query} AND #{field}:#{txt}"
-      end
-      @joined_queries = @joined_queries + 1
+  def set_query(field, value)
+
+    field = Solrium.lookup(field.to_sym) #get solr field name
+    txt = value.gsub(%r{\s}, '+')
+    if @joined_queries == 0
+      @query = "#{field}:#{txt}"
+    elsif @joined_queries > 0
+      @query = "#{@query} AND #{field}:#{txt}"
     end
+    @joined_queries = @joined_queries + 1
+
+    # if query_hash.is_a?(Hash) && (query_hash.size == 1)
+    #   key = query_hash.keys[0]
+    #   field = Solrium.lookup(key) #get solr field name
+    #   txt = query_hash[key].gsub(%r{\s}, '+')
+    #   if @joined_queries == 0
+    #     @query = "#{field}:#{txt}"
+    #   elsif @joined_queries > 0
+    #     @query = "#{@query} AND #{field}:#{txt}"
+    #   end
+    #   @joined_queries = @joined_queries + 1
+    # end
+
+
   end
 
 

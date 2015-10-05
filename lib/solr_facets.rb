@@ -45,9 +45,7 @@ module SolrFacets
   self.add_attrib :SUBJECT, "desc_metadata__subject_sim"
   self.add_attrib :STATUS, "MediatedSubmission_status_ssim"
   self.add_attrib :PUBLISHER, "desc_metadata__publisher_sim"
-  self.add_attrib :FEDORA_MODEL, "active_fedora_model_ssi"
   self.add_attrib :CURRENT_REVIEWER,
     "MediatedSubmission_current_reviewer_id_ssim"
-  self.add_attrib :ALL_REVIEWERS, "MediatedSubmission_all_reviewer_ids_ssim"
 
 end

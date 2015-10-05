@@ -6,13 +6,22 @@ end
 class DashboardController < ApplicationController
   def index
     s = SolrSearch.new
-    # s.set_query depositor: 'qa@bodleian.com'
-    # s.set_query status: 'Claimed'
-    s.set_query title: 'disaster'
+
+
+    if params[:search]
+      parsed_search_params = params[:search].rpartition(":")
+      search_field = parsed_search_params[0] #
+      search_value = parsed_search_params[2] #
+    else #default search
+		search_field = :status
+		search_value = 'Claimed'
+    end
+    s.set_query search_field, search_value
+    s.set_query :creator, "Joe Pitt-Francis"
+
 
 
     response =  s.search(params[:page])
-
 
     @enable_search_form = false #stop ora search form appearing
     @number_items_found =  response['response']['numFound']
@@ -33,7 +42,7 @@ class DashboardController < ApplicationController
   # Creates a Hash where the key is the facet and the value is a Hash
   # containing the facet's constraints
   #
-  # @param facet_hash [Hash] the Solr-style facet Hash in the {facet [Hash]: 
+  # @param facet_hash [Hash] the Solr-style facet Hash in the {facet [Hash]:
   # constraints [Array]} style
   # @return [Hash] a Hash in the {facet [Hash]: constraints [Hash]} style
   def process_facets(facet_hash)
