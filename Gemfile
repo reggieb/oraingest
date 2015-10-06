@@ -2,8 +2,6 @@ source 'https://rubygems.org'
 
 #ruby=2.1.5
 
-# Bundle edge Rails instead: 
-# gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
 
 gem 'mysql2'
@@ -89,7 +87,11 @@ group :development do
   gem 'htmlbeautifier' #allows beautifying ERB files
 end
 
-gem 'simplecov', :require => false, :group => :test
-gem 'coveralls', :require => false, :group => :test
+group :test do
+  gem 'webmock'     # Used in tests so external file location does not need to be present
+  gem 'mock_redis'  # Used so redis does not need to be present during tests
+  gem 'simplecov', :require => false
+  gem 'coveralls', :require => false
+end
 
 gem 'god'

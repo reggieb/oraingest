@@ -3,7 +3,7 @@ language: ruby
 cache: bundler
 sudo: false
 rvm:
-  - 2.1
+  - 2.1.5
 
 before_script:
   - cp ./.travis.database.yml ./config/database.yml
