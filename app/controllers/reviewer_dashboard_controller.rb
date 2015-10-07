@@ -34,7 +34,9 @@ class ReviewerDashboardController < ApplicationController
   def exclude_unwanted_models solr_parameters, user_parameters
     solr_parameters[:fq] ||= []
     solr_parameters[:fq] <<
-        "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Dataset OR active_fedora_model_ssi:Thesis"
+        "active_fedora_model_ssi:Article OR 
+        active_fedora_model_ssi:Dataset OR 
+        active_fedora_model_ssi:Thesis"
   end
   
   # Limits search results to exclude items whose Workflow status is not in Sufia.config.review_dashboard_status

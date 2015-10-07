@@ -148,6 +148,8 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     fastercsv (1.5.5)
     ffi (1.9.10)
+    font-awesome-sass (4.4.0)
+      sass (>= 3.2)
     font-awesome-sass-rails (3.0.2.2)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
@@ -532,7 +534,7 @@ DEPENDENCIES
   devise-guests (~> 0.3)
   devise-remote-user
   factory_girl_rails (~> 4.2.1)
-  font-awesome-sass-rails
+  font-awesome-sass
   god
   hirb
   htmlbeautifier
@@ -567,3 +569,6 @@ DEPENDENCIES
   unicode
   unicorn
   webmock
+
+BUNDLED WITH
+   1.10.6

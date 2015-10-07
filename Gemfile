@@ -2,8 +2,6 @@ source 'https://rubygems.org'
 
 #ruby=2.1.5
 
-# Bundle edge Rails instead: 
-# gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
 
 gem 'mysql2'
@@ -43,7 +41,10 @@ gem 'sufia', "~> 3.7.2"
 gem 'kaminari'
 gem 'jettywrapper', "~> 1.5.0"
 
-gem 'font-awesome-sass-rails'
+# gem 'font-awesome-sass-rails'
+# gem "font-awesome-rails"
+gem 'font-awesome-sass'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'

@@ -1,4 +1,12 @@
 OraHydra::Application.routes.draw do
+  # need this route for spec dashboard_controller_spec.rb:49
+  get "dashboard/index"
+
+
+  # route for new adshboard
+  get '/dash', to: 'fred_dashboard#index'
+
+
   mount Qa::Engine => '/qa'
 
   root :to => "catalog#index"
