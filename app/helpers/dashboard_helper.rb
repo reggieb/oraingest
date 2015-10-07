@@ -21,4 +21,14 @@ module DashboardHelper
     : ""
   end
   
+
+
+def add_facets_to_query_string(facet, constraints)
+   hsh = {} 
+   hsh[facet] = constraints.to_a
+   q = session[:solr_query_params].merge(hsh).to_query
+   logger.info "=============================="
+   logger.info q
+end
+
 end
