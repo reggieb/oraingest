@@ -1,14 +1,14 @@
-require 'tempfile'
 
 # FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
   attr_reader :limit_value
 end
 
-class DashboardController < ApplicationController
+class FredDashboardController < ApplicationController
   def index
     @solr_connection ||= RSolr.connect url: ENV['url']
      session[:solr_query_params] ||= {}
+
 
     if params[:search]
       parsed_search_params = params[:search].rpartition(":")
