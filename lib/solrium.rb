@@ -19,6 +19,10 @@ module Solrium
   end
 
 
+  def self.values
+    @hash.values
+  end
+
   # Gets the Solr field name, given its equivalent readable name.
   #
   # @param field [Symbol] the human-readable attribute, e.g. :title

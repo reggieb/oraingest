@@ -21,28 +21,41 @@ class FredDashboardController < ApplicationController
     #if no search params are passed ,then do default search
     if params.size < 3 #controller and action are always passed in params
       session[:solr_query_params][:status] = 'Claimed'
-      session[:solr_query_params][:creator] = current_user.email
-      @default_query = "(MediatedSubmission_status_ssim:Claimed AND
-                desc_metadata__creatorName_tesim:#{current_user.email})"
+      session[:solr_query_params][:creator] = 'xxx'
+      # session[:solr_query_params][:creator] = current_user.email
+      default_query = "(MediatedSubmission_status_ssim:Claimed AND
+                desc_metadata__creatorName_tesim:xxx)"
+    elsif params.keys.include? 'search'
+      full_text_query = full_search_query(params[:search])
+      session[:solr_query_params].clear
+      # session[:solr_query_params][]
+
     else # user selected search parameters
       params.each do |k, v|
-        if k == 'query_add'
+        if %w(query_add query_remove).include? k
           facet = v.keys[0]
           value = v[facet]
-          session[:solr_query_params][facet.to_sym] = value
-        end
-        if k == 'query_remove'
-          facet = v.keys[0]
-          value = v[facet]
-          if session[:solr_query_params].has_key?(facet.to_sym)
-            session[:solr_query_params].delete(facet.to_sym)
+          case k
+          when 'query_add'
+            session[:solr_query_params][facet.to_sym] = value
+          when 'query_remove'
+            if session[:solr_query_params].has_key?(facet.to_sym)
+              session[:solr_query_params].delete(facet.to_sym)
+            end
           end
         end
       end
     end
 
-
-    response = do_search
+    response = (
+      if default_query
+        do_search(default_query)
+      elsif full_text_query
+        do_search(full_text_query)
+      else
+        do_search(set_query)
+      end
+    )
 
     @enable_search_form = false #stop ora search form appearing
     @number_items_found =  response['response']['numFound']
@@ -57,10 +70,8 @@ class FredDashboardController < ApplicationController
   end
 
 
-  private
 
-  def do_search
-    query =  @default_query || set_query
+  def do_search(query)
     logger.info "Solr search query: #{query}"
     page = 1 unless params[:page]
 
@@ -128,5 +139,18 @@ class FredDashboardController < ApplicationController
     end
     constraints_hash
   end
+
+
+
+  def full_search_query(term)
+    q_string = ""
+    Solrium.values.each_with_index do |solr_field, i|
+      q_string = q_string + "#{solr_field}:#{term}"
+      q_string = q_string + " OR " unless i == Solrium.values.size - 1
+    end
+    q_string
+  end
+
+
 
 end
