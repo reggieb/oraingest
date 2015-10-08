@@ -1,0 +1,15 @@
+<h4 class="heading4">Filters</h4>
+<% session[:solr_query_params].each do |field, value| %>
+<span class="label label-primary">
+<% query_string = Hash.new { |hash, key| hash[key] = {} } %>
+<% query_string['query_remove'][field] = value %>
+
+	<a href="?<%= query_string.to_query %>">
+		<i class="fa fa-remove fa-sm"></i>
+	</a>
+	<strong> <%= field.to_s.capitalize %></strong>:
+	<%= value %>
+</span>
+</br>
+</br>
+<% end %>

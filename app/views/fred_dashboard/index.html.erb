@@ -22,17 +22,7 @@
 				<% end %>
 
 				</ul>
-				<h4 class="heading4">Filters</h4>
-				<% session[:solr_query_params].each do |field, value| %>
-					<span class="label label-primary">
-						<%= field.to_s.capitalize %>
-						<a href="?search_remove=<%= field.to_s %>:<%= value %>">
-					  <i class="fa fa-remove fa-sm"></i>
-					  </a>
-				    </span> 
-				    </br>
-				    </br>
-				  <% end %>
+				<%= render 'show_filters' %>
 
 			</aside>
 		</div>

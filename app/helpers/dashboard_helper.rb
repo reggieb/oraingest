@@ -20,15 +20,23 @@ module DashboardHelper
     item_status ? item_status.downcase.gsub(%r{\s}, '-').prepend('tag-')
     : ""
   end
-  
 
 
-def add_facets_to_query_string(facet, constraints)
-   hsh = {} 
-   hsh[facet] = constraints.to_a
-   q = session[:solr_query_params].merge(hsh).to_query
-   logger.info "=============================="
-   logger.info q
-end
+
+  def add_facets_to_query_string(facet, constraint_name)
+    unless session[:solr_query_params][facet] == constraint_name
+      hsh = {}
+      hsh[facet] = constraint_name
+      session[:solr_query_params].merge!(hsh)
+    end
+    session[:solr_query_params].to_query
+  end
+
+  def remove_facets_to_query_string(facet, constraint_name)
+    if session[:solr_query_params][facet] == constraint_name
+      session[:solr_query_params].delete(facet)
+    end
+    session[:solr_query_params].to_query
+  end
 
 end

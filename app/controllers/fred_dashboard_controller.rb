@@ -20,27 +20,26 @@ class FredDashboardController < ApplicationController
 
     #if no search params are passed ,then do default search
     if params.size < 3 #controller and action are always passed
-      # session[:solr_query_params][:status] = 'Claimed'
-      # session[:solr_query_params][:creator] = current_user.email
+      session[:solr_query_params][:status] = 'Claimed'
+      session[:solr_query_params][:creator] = 'Joe+Pitt-Francis'
       # session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
-      @default_query = "(MediatedSubmission_status_ssim:Claimed AND 
-                desc_metadata__creatorName_tesim:#{current_user.email}) OR 
-                (NOT MediatedSubmission_status_ssim:Claimed)"
+      @default_query = "(MediatedSubmission_status_ssim:Claimed AND
+                desc_metadata__creatorName_tesim:Joe+Pitt-Francis)"
     else # user selected search parameters
       params.each do |k, v|
-        unless k.to_sym == :controller ||
-            k.to_sym == :action ||
-            k.to_sym == :page ||
-            (session[:solr_query_params][k.to_sym] == v)
-          session[:solr_query_params][k.to_sym] = v
+        if k == 'query_add'
+          facet = v.keys[0]
+          value = v[facet]
+          session[:solr_query_params][facet.to_sym] = value
+        end
+        if k == 'query_remove'
+          facet = v.keys[0]
+          value = v[facet]
+          if session[:solr_query_params].has_key?(facet.to_sym)
+            session[:solr_query_params].delete(facet.to_sym)
+          end
         end
       end
-    end
-
-
-    if params[:search_remove]
-      key_to_delete = params[:search_remove].rpartition(":")[0].to_sym
-      session[:solr_query_params].delete(key_to_delete)
     end
 
 
@@ -56,20 +55,14 @@ class FredDashboardController < ApplicationController
       # TODO: deal with error
     end
 
-
   end
-
 
 
   private
 
-
-
   def do_search
-
     query =  @default_query || set_query
     logger.info "Solr search query: #{query}"
-    # binding.pry
     page = 1 unless params[:page]
 
 
@@ -84,6 +77,13 @@ class FredDashboardController < ApplicationController
   end
 
 
+  def build_query
+    idx, query = 0, "*:*"
+    if session[:solr_query_params] && session[:solr_query_params].size > 0
+      session[:solr_query_params].each do |k, v|
+      end
+    end
+  end
 
   def set_query
     idx, query = 0, "*:*"
