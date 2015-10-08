@@ -19,12 +19,11 @@ class FredDashboardController < ApplicationController
 
 
     #if no search params are passed ,then do default search
-    if params.size < 3 #controller and action are always passed
+    if params.size < 3 #controller and action are always passed in params
       session[:solr_query_params][:status] = 'Claimed'
-      session[:solr_query_params][:creator] = 'Joe+Pitt-Francis'
-      # session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
+      session[:solr_query_params][:creator] = current_user.email
       @default_query = "(MediatedSubmission_status_ssim:Claimed AND
-                desc_metadata__creatorName_tesim:Joe+Pitt-Francis)"
+                desc_metadata__creatorName_tesim:#{current_user.email})"
     else # user selected search parameters
       params.each do |k, v|
         if k == 'query_add'
@@ -76,14 +75,6 @@ class FredDashboardController < ApplicationController
 
   end
 
-
-  def build_query
-    idx, query = 0, "*:*"
-    if session[:solr_query_params] && session[:solr_query_params].size > 0
-      session[:solr_query_params].each do |k, v|
-      end
-    end
-  end
 
   def set_query
     idx, query = 0, "*:*"

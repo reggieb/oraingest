@@ -4,9 +4,7 @@
 
 <div class="row">
 	<% unless @result_list %>
-		<h3 class="heading3">No Items retrieved
-		<strong>Back to <%= link_to 'dashboard' %></strong>
-		</h3>
+		<%= render 'no_items_found' %>
 	<% end %>
 </div>
 
