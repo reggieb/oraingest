@@ -2,7 +2,8 @@
 	<ul>
 		<% constraints.each do |name, count| %>
 		<li>
-			<a class="facet_select" href="?search=<%= facet.to_s %>:<%= name %>">
+			<% query_string = add_facets_to_query_string(facet, constraints) %>
+			<a class="facet_select" href="?<%= query_string %>">
 				<%= name %></a>
 			<span class="count"><%= count %></span>
 		</li>

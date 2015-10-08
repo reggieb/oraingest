@@ -44,9 +44,7 @@
 				<% item = DashboardItem.new(solr_doc) %>
 				<tr>
 					<article class="review-article">
-						<div class="content">
-							<%= render partial: 'article_content', locals: {item: item} %>
-						</div>
+						<%= render partial: 'article_content', locals: {item: item} %>
 						<%= render partial: 'dashboard_item_buttons', locals: 
 							{id: item.id, add_claim_button: !item.is_it_claimed?} %>
 					</article>

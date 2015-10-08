@@ -7,28 +7,43 @@ end
 class FredDashboardController < ApplicationController
   def index
     @solr_connection ||= RSolr.connect url: ENV['url']
-     session[:solr_query_params] ||= {}
+    session[:solr_query_params] ||= {}
 
 
-    if params[:search]
-      parsed_search_params = params[:search].rpartition(":")
-      session[:solr_query_params][parsed_search_params[0].to_sym] = parsed_search_params[2]
+
+    def restrict_access_to_reviewers
+      unless can? :review, :all
+        raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+      end
     end
 
-    if !params[:search] &&  session[:solr_query_params].empty? #default search
-      session[:solr_query_params][:status] = 'Claimed'
-      session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
+
+    #if no search params are passed ,then do default search
+    if params.size < 3 #controller and action are always passed
+      # session[:solr_query_params][:status] = 'Claimed'
+      # session[:solr_query_params][:creator] = current_user.email
+      # session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
+      @default_query = "(MediatedSubmission_status_ssim:Claimed AND 
+                desc_metadata__creatorName_tesim:#{current_user.email}) OR 
+                (NOT MediatedSubmission_status_ssim:Claimed)"
+    else # user selected search parameters
+      params.each do |k, v|
+        unless k.to_sym == :controller ||
+            k.to_sym == :action ||
+            k.to_sym == :page ||
+            (session[:solr_query_params][k.to_sym] == v)
+          session[:solr_query_params][k.to_sym] = v
+        end
+      end
     end
 
 
     if params[:search_remove]
-    	key_to_delete = params[:search_remove].rpartition(":")[0].to_sym
-		session[:solr_query_params].delete(key_to_delete)
+      key_to_delete = params[:search_remove].rpartition(":")[0].to_sym
+      session[:solr_query_params].delete(key_to_delete)
     end
 
 
-
-    # set_query
     response = do_search
 
     @enable_search_form = false #stop ora search form appearing
@@ -52,13 +67,11 @@ class FredDashboardController < ApplicationController
 
   def do_search
 
-  	query = set_query
+    query =  @default_query || set_query
+    logger.info "Solr search query: #{query}"
+    # binding.pry
     page = 1 unless params[:page]
 
-    unless query
-      logger.info ">>> SolrSearch#search, query_hash is nil - defaulting to global search"
-      query = "*:*"
-    end
 
     @solr_connection.paginate page, 10, "select", params: {
       q: query,
@@ -73,16 +86,21 @@ class FredDashboardController < ApplicationController
 
 
   def set_query
-  	idx, query = 0, ""
-    session[:solr_query_params].each do |k, v|
-      field = Solrium.lookup(k.to_sym) #get solr field name
-      txt = v.gsub(%r{\s}, '+')
-      if idx > 0
-        query = "#{query} AND #{field}:#{txt}"
-      else
-        query = "#{field}:#{txt}"
+    idx, query = 0, "*:*"
+    if session[:solr_query_params] && session[:solr_query_params].size > 0
+      session[:solr_query_params].each do |k, v|
+        field = Solrium.lookup(k.to_sym) #get solr field name
+        txt = v.gsub(%r{\s}, '+')
+        if idx > 0
+          query = "#{query} AND #{field}:#{txt}"
+        else
+          query = "#{field}:#{txt}"
+        end
+        idx = idx + 1
       end
-      idx = idx + 1
+    else
+      logger.warn ">>> SolrSearch#search, query_hash is nil or empty \
+            - defaulting to global search"
     end
     query
   end
