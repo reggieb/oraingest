@@ -30,12 +30,13 @@ class ReviewerDashboardController < ApplicationController
   
   # Limits search results just to GenericFile and Collection objects
   # @param solr_parameters the current solr parameters
-  # @param user_parameters the current user-subitted parameters
+  # @param user_parameters the current user-submitted parameters
   def exclude_unwanted_models solr_parameters, user_parameters
     solr_parameters[:fq] ||= []
-    # Only include GenericFile and Collection objects
-    #solr_parameters[:fq] << "active_fedora_model_ssi:GenericFile OR active_fedora_model_ssi:Collection"
-    solr_parameters[:fq] << "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Dataset"
+    solr_parameters[:fq] <<
+        "active_fedora_model_ssi:Article OR 
+        active_fedora_model_ssi:Dataset OR 
+        active_fedora_model_ssi:Thesis"
   end
   
   # Limits search results to exclude items whose Workflow status is not in Sufia.config.review_dashboard_status
@@ -48,4 +49,15 @@ class ReviewerDashboardController < ApplicationController
     end
   end
   
+  def current_user_claimed_tickets_count
+    return 0 unless current_user
+    facet = @response.facets.find {|f| f.name == 'MediatedSubmission_current_reviewer_id_ssim'}
+    return 0 unless facet
+    user_item = facet.items.find {|i| i.value == current_user.email}
+    return 0 unless user_item
+    user_item.hits
+  end
+  helper_method :current_user_claimed_tickets_count
+  
 end
+

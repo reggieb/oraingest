@@ -4,9 +4,7 @@
 
 <div class="row">
 	<% unless @result_list %>
-		<h3 class="heading3">No Items retrieved
-		<strong>Back to <%= link_to 'dashboard' %></strong>
-		</h3>
+		<%= render 'no_items_found' %>
 	<% end %>
 </div>
 
@@ -22,17 +20,7 @@
 				<% end %>
 
 				</ul>
-				<h4 class="heading4">Filters</h4>
-				<% session[:solr_query_params].each do |field, value| %>
-					<span class="label label-primary">
-						<%= field.to_s.capitalize %>
-						<a href="?search_remove=<%= field.to_s %>:<%= value %>">
-					  <i class="fa fa-remove fa-sm"></i>
-					  </a>
-				    </span> 
-				    </br>
-				    </br>
-				  <% end %>
+				<%= render 'show_filters' %>
 
 			</aside>
 		</div>
@@ -44,9 +32,7 @@
 				<% item = DashboardItem.new(solr_doc) %>
 				<tr>
 					<article class="review-article">
-						<div class="content">
-							<%= render partial: 'article_content', locals: {item: item} %>
-						</div>
+						<%= render partial: 'article_content', locals: {item: item} %>
 						<%= render partial: 'dashboard_item_buttons', locals: 
 							{id: item.id, add_claim_button: !item.is_it_claimed?} %>
 					</article>

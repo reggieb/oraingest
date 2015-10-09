@@ -18,54 +18,60 @@ class DashboardItem
     end
   end
 
-  
+
   def is_it_claimed?
-  	self.status == 'Claimed'
+    self.status == 'Claimed'
   end
 
   # define explicit getters for instance variables we want to refine
   # before exposing to the outside
   def title
-    trim_text(@title.first, 300)
+    @title ? trim_text(@title.first, 300) : ""
   end
 
   def abstract
-    trim_text(@abstract.first, 300)
+    @abstract ? trim_text(@abstract.first, 300) : ""
   end
 
   def creator
-    @creator.join('; ')
+    @creator ? @creator.join('; ') : ""
   end
 
   def status
-    @status.first
+    @status ? @status.first : ""
   end
 
   def type
-    @type.first
+    @type ? @type.first : ""
   end
 
   def depositor
-    @depositor.first
+    @depositor ? @depositor.first : ""
   end
 
   def reviewer
-    @reviewer.first
+    @reviewer ? @reviewer.first : ""
   end
 
   def date
-    @date_published.first || @date_accepted.first ||  " "
+    if  @date_published && @date_published.size >  0
+      @date_published.first
+    elsif  @date_accepted && @date_accepted.size >  0
+      @date_accepted.first
+    else
+      " "
+    end
   end
-
+  
   def date_type
-  	dt = " "
-  	dt = "published" if @date_published && @date_published.first
-  	dt = "accepted" if @date_accepted && @date_accepted.first && dt == " "
-  	dt
+    dt = " "
+    dt = "published" if @date_published && @date_published.first
+    dt = "accepted" if @date_accepted && @date_accepted.first && dt == " "
+    dt
   end
 
   def tickets
-  	@rt_tickets ||= []
+    @rt_tickets ||= []
   end
 
 
