@@ -1,5 +1,11 @@
 <h4 class="heading4">No Items retrieved for these search criteria. You can always search across the dashboard using the free-text search box:
 </h4>
+
+<%= link_to "Show all (toggle)",
+ dash_path(admin: true),
+ remote: true,
+ id: 'toggle' %>
+
 <div class="search">
 	<%= form_tag '/dash', :method => :get, :class => "well form-search" do %>
 		<%= text_field_tag :search, params[:search], :class => "q span50", :placeholder => "Search Reviewer Dashboard", :size => 30, :type => "search", :id => "dash_search" %>
