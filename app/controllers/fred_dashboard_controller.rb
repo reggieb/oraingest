@@ -16,10 +16,8 @@ class FredDashboardController < ApplicationController
     @default_search = {status: 'Claimed', creator: 'Joe Pitt-Francis'}
     session[:solr_query_params] ||= {}
 
-
-    binding.pry
     #if no search or query params are passed ,then do default search
-    if params.size < 3 #controller and action are always passed in params
+    if (!params.keys.include? 'search') && (!params.keys.include? 'query')
       redirect_to action: 'index', query: @default_search.to_query and return
       # session[:solr_query_params][:creator] = current_user.email
     elsif (params.keys.include? 'search') && (!params.keys.include? 'query')
@@ -48,7 +46,8 @@ class FredDashboardController < ApplicationController
   def build_query(query_terms)
     idx, query = 0, "*:*"
     query_terms.each do |k, v|
-      field = Solrium.lookup(k.to_sym) #get solr field name
+      trimmed_key = k.gsub(%r{[\[\]]}, '') # remove array notation, if present
+      field = Solrium.lookup(trimmed_key.to_sym) #get solr field name
       if v.size == 1
         txt = v.first.gsub(%r{\s}, '+')
         query =  idx > 0 ? "#{query} AND #{field}:#{txt}" : "#{field}:#{txt}"

@@ -2,9 +2,8 @@
 <ul>
 	<% constraints.each do |name, count| %>
 	<li>
-		<% query_string = {facet => name} %>
-		<% new_query =  CGI.parse(params[:query]).merge(query_string) %>
-		<% binding.pry %>
+		<% new_query_term = {facet => name} %>
+		<% new_query =  add_to_query(new_query_term) %>
 		<%= link_to name,  { controller: "fred_dashboard", query: new_query.to_query }, class: "facet_select" %>
 		<span class="count"><%= count %></span>
 	</li>
