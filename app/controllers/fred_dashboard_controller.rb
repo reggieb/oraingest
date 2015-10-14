@@ -13,7 +13,7 @@ end
 class FredDashboardController < ApplicationController
   def index
     @solr_connection ||= RSolr.connect url: ENV['url']
-    @default_search = {status: 'Claimed', creator: 'Joe Pitt-Francis'}
+    @default_search = {status: 'Claimed', creator: current_user.email}
     session[:solr_query_params] ||= {}
 
     #if no search or query params are passed ,then do default search
