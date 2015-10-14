@@ -4,47 +4,32 @@ class RSolr::Response::PaginatedDocSet
   attr_reader :limit_value
 end
 
+def restrict_access_to_reviewers
+  unless can? :review, :all
+    raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+  end
+end
+
 class FredDashboardController < ApplicationController
   def index
     @solr_connection ||= RSolr.connect url: ENV['url']
+    @default_search = {status: 'Claimed', creator: current_user.email}
     session[:solr_query_params] ||= {}
 
-
-
-    def restrict_access_to_reviewers
-      unless can? :review, :all
-        raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
-      end
-    end
-
-
-    #if no search params are passed ,then do default search
-    if params.size < 3 #controller and action are always passed
-      # session[:solr_query_params][:status] = 'Claimed'
+    #if no search or query params are passed ,then do default search
+    if (!params.keys.include? 'search') && (!params.keys.include? 'query')
+      redirect_to action: 'index', query: @default_search.to_query and return
       # session[:solr_query_params][:creator] = current_user.email
-      # session[:solr_query_params][:creator] = 'Joe Pitt-Francis'
-      @default_query = "(MediatedSubmission_status_ssim:Claimed AND 
-                desc_metadata__creatorName_tesim:#{current_user.email}) OR 
-                (NOT MediatedSubmission_status_ssim:Claimed)"
-    else # user selected search parameters
-      params.each do |k, v|
-        unless k.to_sym == :controller ||
-            k.to_sym == :action ||
-            k.to_sym == :page ||
-            (session[:solr_query_params][k.to_sym] == v)
-          session[:solr_query_params][k.to_sym] = v
-        end
-      end
+    elsif (params.keys.include? 'search') && (!params.keys.include? 'query')
+      # user doing a full text search
+      full_text_query = full_search_query(params[:search])
+      response = do_search(full_text_query)
+
+    elsif (!params.keys.include? 'search') && (params.keys.include? 'query')
+      query = build_query( CGI.parse(params[:query]) )
+      response = do_search(query)
     end
 
-
-    if params[:search_remove]
-      key_to_delete = params[:search_remove].rpartition(":")[0].to_sym
-      session[:solr_query_params].delete(key_to_delete)
-    end
-
-
-    response = do_search
 
     @enable_search_form = false #stop ora search form appearing
     @number_items_found =  response['response']['numFound']
@@ -56,20 +41,30 @@ class FredDashboardController < ApplicationController
       # TODO: deal with error
     end
 
+  end
 
+  def build_query(query_terms)
+    idx, query = 0, "*:*"
+    query_terms.each do |k, v|
+      trimmed_key = k.gsub(%r{[\[\]]}, '') # remove array notation, if present
+      field = Solrium.lookup(trimmed_key.to_sym) #get solr field name
+      if v.size == 1
+        txt = v.first.gsub(%r{\s}, '+')
+        query =  idx > 0 ? "#{query} AND #{field}:#{txt}" : "#{field}:#{txt}"
+        idx = idx + 1
+      elsif v.size > 1
+        v.each do |value|
+          #TODO: deal with multi-value fields
+        end
+      end
+    end
+    query
   end
 
 
 
-  private
-
-
-
-  def do_search
-
-    query =  @default_query || set_query
+  def do_search(query)
     logger.info "Solr search query: #{query}"
-    # binding.pry
     page = 1 unless params[:page]
 
 
@@ -82,7 +77,6 @@ class FredDashboardController < ApplicationController
     }
 
   end
-
 
 
   def set_query
@@ -137,5 +131,18 @@ class FredDashboardController < ApplicationController
     end
     constraints_hash
   end
+
+
+
+  def full_search_query(term)
+    q_string = ""
+    Solrium.values.each_with_index do |solr_field, i|
+      q_string = q_string + "#{solr_field}:#{term}"
+      q_string = q_string + " OR " unless i == Solrium.values.size - 1
+    end
+    q_string
+  end
+
+
 
 end

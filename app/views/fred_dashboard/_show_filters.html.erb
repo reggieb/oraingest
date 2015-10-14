@@ -1,0 +1,12 @@
+<h4 class="heading4">Filters</h4>
+<% CGI.parse(params[:query]).each do |field, value| %>
+<span class="label label-primary">
+	<% new_query =  remove_query(field) %>
+	<%= link_to '',  { controller: "fred_dashboard", query: new_query.to_query }, class: "fa fa-remove fa-sm" %>
+	<% field = field.gsub(%r{[\[\]]}, '') if field.is_a? String %>
+	<strong> <%= field.to_s.capitalize %></strong>:
+	<%= value.first %>
+</span>
+</br>
+</br>
+<% end %>

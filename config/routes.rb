@@ -3,7 +3,7 @@ OraHydra::Application.routes.draw do
   get "dashboard/index"
 
 
-  # route for new adshboard
+  # route for new dashboard
   get '/dash', to: 'fred_dashboard#index'
 
 
