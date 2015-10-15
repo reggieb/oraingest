@@ -22,9 +22,10 @@ module DashboardHelper
   end
 
 
+  def search_status
+  end
 
   def add_to_query(query_term)
-
     sanitised_hash = sanitise_params_query_hash
 
     if sanitised_hash.has_key? query_term.keys.first.to_s
@@ -46,13 +47,16 @@ module DashboardHelper
   def sanitise_params_query_hash
     query_hash = {}
 
-    CGI.parse(params[:query]).each do |k, v|
-      if k.is_a? String
-        query_hash[k.gsub(%r{[\[\]]}, '')] = v
-      elsif k.is_a? Symbol
-        query_hash[k] = v
+    if params[:query]
+      CGI.parse(params[:query]).each do |k, v|
+        if k.is_a? String
+          query_hash[k.gsub(%r{[\[\]]}, '')] = v
+        elsif k.is_a? Symbol
+          query_hash[k] = v
+        end
       end
     end
+
     query_hash
   end
 
