@@ -42,6 +42,8 @@ module Solrium
     @hash.key(solr_field).to_s.downcase.to_sym
   end
 
+
+  # let's add all known Solr attributes with humanised names
   self.add_attr :ID, 'id'
   self.add_attr :STATUS, 'MediatedSubmission_status_ssim'
   self.add_attr :TITLE, 'desc_metadata__title_tesim'
