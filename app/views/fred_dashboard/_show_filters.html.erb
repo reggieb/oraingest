@@ -1,14 +1,11 @@
 <h4 class="heading4">Filters</h4>
-<% session[:solr_query_params].each do |field, value| %>
+<% CGI.parse(params[:query]).each do |field, value| %>
 <span class="label label-primary">
-<% query_string = Hash.new { |hash, key| hash[key] = {} } %>
-<% query_string['query_remove'][field] = value %>
-
-	<a href="?<%= query_string.to_query %>">
-		<i class="fa fa-remove fa-sm"></i>
-	</a>
+	<% new_query =  remove_query(field) %>
+	<%= link_to '',  { controller: "fred_dashboard", query: new_query.to_query }, class: "fa fa-remove fa-sm" %>
+	<% field = field.gsub(%r{[\[\]]}, '') if field.is_a? String %>
 	<strong> <%= field.to_s.capitalize %></strong>:
-	<%= value %>
+	<%= value.first %>
 </span>
 </br>
 </br>

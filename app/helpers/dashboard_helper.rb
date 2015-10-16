@@ -22,6 +22,44 @@ module DashboardHelper
   end
 
 
+  def search_status
+  end
+
+  def add_to_query(query_term)
+    sanitised_hash = sanitise_params_query_hash
+
+    if sanitised_hash.has_key? query_term.keys.first.to_s
+      sanitised_hash
+    else
+      sanitised_hash.merge(query_term)
+    end
+
+  end
+
+
+  def remove_query(key)
+    key = key.gsub(%r{[\[\]]}, '')
+    sanitised_hash = sanitise_params_query_hash
+    sanitised_hash.delete(key)
+    sanitised_hash
+  end
+
+  def sanitise_params_query_hash
+    query_hash = {}
+
+    if params[:query]
+      CGI.parse(params[:query]).each do |k, v|
+        if k.is_a? String
+          query_hash[k.gsub(%r{[\[\]]}, '')] = v
+        elsif k.is_a? Symbol
+          query_hash[k] = v
+        end
+      end
+    end
+
+    query_hash
+  end
+
 
   def add_facets_to_query_string(facet, constraint_name)
     unless session[:solr_query_params][facet] == constraint_name

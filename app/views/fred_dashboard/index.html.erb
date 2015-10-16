@@ -9,10 +9,14 @@
 </div>
 
 <% if @result_list %>
+
+<%= render 'search_review_dash' %>
+
 	<div class="row">
 		<%= paginate @result_list, theme: 'blacklight' %>
 
 		<div class="col col1of6">
+		<% unless params.keys.include? 'search' %>
 			<aside class="filters">
 				<ul id="facets">
 				<% @facets.each do |k, v| %>
@@ -23,9 +27,12 @@
 				<%= render 'show_filters' %>
 
 			</aside>
+		<% end %>
 		</div>
 
 		<div class="col col5of6">
+
+
 			<h3 class="heading3"><%= @number_items_found %> Items retrieved</h3>
 			<table>
 				<% @result_list.each do |solr_doc| %>
