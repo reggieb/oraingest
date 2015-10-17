@@ -26,14 +26,8 @@ module DashboardHelper
   end
 
   def add_to_query(query_term)
-    sanitised_hash = sanitise_params_query_hash
-
-    if sanitised_hash.has_key? query_term.keys.first.to_s
-      sanitised_hash
-    else
-      sanitised_hash.merge(query_term)
-    end
-
+      query_term.keys.first
+      ""
   end
 
 

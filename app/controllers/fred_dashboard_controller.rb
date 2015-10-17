@@ -1,3 +1,4 @@
+require "net/http"
 
 # FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
@@ -14,62 +15,46 @@ class FredDashboardController < ApplicationController
     @solr_connection ||= RSolr.connect url: ENV['url']
     @default_search = {status: 'Claimed', creator: current_user.email}
     session[:solr_query_params] ||= {}
-    #if no search or query params are passed, then do default search
-    if (!params.keys.include? 'search') && (!params.keys.include? 'query')
-      redirect_to action: 'index', query: @default_search.to_query, state: 'initial_search' and return
-      # session[:solr_query_params][:creator] = current_user.email
-    elsif (params.keys.include? 'search') && (!params.keys.include? 'query')
-      # user doing a full text search
-      full_text_query = full_search_query(params[:search])
-      response = do_search(full_text_query)
-
-    elsif (!params.keys.include? 'search') && (params.keys.include? 'query')
-      query = build_query( CGI.parse(params[:query]) )
-      response = do_search(query)
-    end
+    @solr_docs = []
 
 
-    @enable_search_form = false #stop ora search form appearing
-    @number_items_found =  response['response']['numFound']
+    total = @solr_connection.select({:rows => 0})["response"]["numFound"]
+    rows  = 100
 
-    if @number_items_found > 0
 
-      @result_list = response['response']['docs']
-      @facets = process_facets( response['facet_counts']['facet_fields'] )
-    else
-      if params[:state] == 'initial_search'
-        redirect_to action: 'index', query: {status: 'NOT Claimed'}.to_query and return
-        # response = do_search("NOT MediatedSubmission_status_ssim:Claimed")
-        # params[:query] = nil
-        # @result_list = response['response']['docs']
-        # @facets = process_facets( response['facet_counts']['facet_fields'] )
+
+    pages = (total.to_f / rows.to_f).ceil # round up
+    (1..pages).each do |page|
+      start = (page-1) * rows
+      query_string = "/select?q=*%3A*&rows=#{rows}&start=#{start}&wt=ruby"
+      # need to remove # from url, or it won't work
+      sanitised_url = ENV['url'].gsub(%r{/#}, '')
+      response = http_request(sanitised_url + query_string)
+      if response.is_a? Net::HTTPSuccess 
+        #body is a Hash wrapped in a String, so eval will give us the Hash
+        solr_hash = eval(response.body) 
+        @facets = process_facets( solr_hash['facet_counts']['facet_fields'] )
+        solr_hash['response']['docs'].each do |solr_doc|
+          @solr_docs << SolrDoc.new(solr_doc)
+        end
       else
         # TODO: deal with error
       end
     end
 
-  end
-
-  def build_query(query_terms)
-    idx, query = 0, "*:*"
-    query_terms.each do |k, v|
-      trimmed_key = k.gsub(%r{[\[\]]}, '') # remove array notation, if present
-      field = Solrium.lookup(trimmed_key.to_sym) #get solr field name
-      if v.size == 1
-        if v.first.include? "NOT "
-          query = "NOT #{field}:#{v.first[4..-1]}"
-        else
-          txt = v.first.gsub(%r{\s}, '+')
-          query =  idx > 0 ? "#{query} AND #{field}:#{txt}" : "#{field}:#{txt}"
-          idx = idx + 1
-        end
-      elsif v.size > 1
-        v.each do |value|
-          #TODO: deal with multi-value fields
-        end
-      end
+    if params[:q]  
+      query_string = params[:q]
+    else
+      query_string = "status=Claimed,creator=#{current_user.email}" 
     end
-    query
+    results = QueryStringSearch.new(@solr_docs, query_string).results
+    binding.pry
+
+    @result_list = Kaminari.paginate_array(results, total_count: pages).page(params[:page]).per(10)
+
+    @enable_search_form = false #stop ora search form appearing
+
+
   end
 
 
@@ -88,6 +73,26 @@ class FredDashboardController < ApplicationController
     }
 
   end
+
+  def http_request(url, limit = 10)
+
+    raise ArgumentError, 'HTTP redirect too deep' if limit == 0
+
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    response = http.request(request)
+
+    if response.is_a? Net::HTTPSuccess 
+      response
+    elsif response.is_a? Net::HTTPRedirection 
+      http_request(response['location'], limit - 1)
+    else
+      response.error!
+    end    
+  end
+
 
 
   def set_query
