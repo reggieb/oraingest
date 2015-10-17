@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 describe DashboardController do
-<<<<<<< HEAD
- 
-=======
   before do
     @routes = Sufia::Engine.routes
   end
@@ -65,5 +62,4 @@ describe DashboardController do
       end
     end
   end
->>>>>>> 3256ea0016a393c0321360372b5bd7d5b102bf35
 end
