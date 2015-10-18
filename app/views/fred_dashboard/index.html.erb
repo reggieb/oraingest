@@ -20,7 +20,7 @@
 						<% end %>
 					<% end %>
 				</ul>
-				<%= render 'show_filters' %>
+				<%= render 'show_filters' unless params[:search] %>
 			</aside>
 		</div>
 		<div class="col col5of6">

@@ -64,6 +64,11 @@ class SolrDocTest < ActiveSupport::TestCase
     assert_equal '10/03/2015', @@solr_doc.date_accepted
   end
 
+  test "Subject attribute set correctly" do
+    assert_includes @@solr_doc.subject, 'Religion'
+    assert_includes @@solr_doc.subject, 'Forced migration'
+  end
+
   #TODO: test "Abstract attribute set correctly" do
 
 

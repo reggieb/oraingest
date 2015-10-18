@@ -46,7 +46,10 @@ class FredDashboardController < ApplicationController
     default_query = "status=Claimed,creator=#{current_user.email}"
     backup_query = "status!=Claimed"
 
-    if params[:q] && !params[:q].empty?
+
+	if params[:search]
+		# just prevent the query string from being set
+    elsif params[:q] && !params[:q].empty?
       @query_string = params[:q]
     elsif params[:q] && params[:q].empty?  
     	@query_string = 'all'
@@ -54,7 +57,9 @@ class FredDashboardController < ApplicationController
       redirect_to action: 'index', q: default_query and return
     end
 
-    results = QueryStringSearch.new(@solr_docs, @query_string).results
+	results = params[:search] ? do_global_search(params[:search]) : 
+			QueryStringSearch.new(@solr_docs, @query_string).results
+
     @total_found = results.size
 
     # if default search query doesn't find anything, use backup query
@@ -71,11 +76,9 @@ class FredDashboardController < ApplicationController
 	end
 
 
-    @enable_search_form = false #stop ora search form appearing
-
+    @disable_search_form = true #stop ora search form appearing
 
   end
-
 
 
   def do_search(query)
@@ -91,6 +94,17 @@ class FredDashboardController < ApplicationController
       wt: "ruby"
     }
 
+  end
+
+
+  def do_global_search( search_term )
+  	joined_results = []
+    Solrium.each do |nice_name, solr_name|
+      qs= "#{nice_name.to_s.downcase}=#{search_term}"
+	  rs = QueryStringSearch.new(@solr_docs, qs).results
+	  joined_results.concat( rs ) if rs.size > 0
+	end
+  	joined_results
   end
 
   def http_request(url, limit = 10)

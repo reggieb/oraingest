@@ -64,7 +64,9 @@ class SolrDoc
     @date_accepted ? @date_accepted.first : ""
   end
 
-
+  def subject
+    @subject ? @subject : ""
+  end
 
 
 end
