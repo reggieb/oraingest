@@ -13,14 +13,15 @@ class FredDashboardController < ApplicationController
 
   def index
     @solr_connection ||= RSolr.connect url: ENV['url']
-    @default_search = {status: 'Claimed', creator: current_user.email}
-    session[:solr_query_params] ||= {}
-    @solr_docs = []
+    @solr_docs ||= [] #list if SolrDoc documents
 
 
     total = @solr_connection.select({:rows => 0})["response"]["numFound"]
-    rows  = 100
+    if total < 1
+      #TODO: no Solr records, render error page
+    end
 
+    rows  = 100 # rows to retrieve at a time
 
 
     pages = (total.to_f / rows.to_f).ceil # round up
@@ -38,19 +39,37 @@ class FredDashboardController < ApplicationController
           @solr_docs << SolrDoc.new(solr_doc)
         end
       else
-        # TODO: deal with error
+        # TODO: deal with error in accessing Solr
       end
     end
 
-    if params[:q]  
-      query_string = params[:q]
-    else
-      query_string = "status=Claimed,creator=#{current_user.email}" 
-    end
-    results = QueryStringSearch.new(@solr_docs, query_string).results
-    binding.pry
+    default_query = "status=Claimed,creator=#{current_user.email}"
+    backup_query = "status!=Claimed"
 
-    @result_list = Kaminari.paginate_array(results, total_count: pages).page(params[:page]).per(10)
+    if params[:q] && !params[:q].empty?
+      @query_string = params[:q]
+    elsif params[:q] && params[:q].empty?  
+    	@query_string = 'all'
+    elsif !params[:q]
+      redirect_to action: 'index', q: default_query and return
+    end
+
+    results = QueryStringSearch.new(@solr_docs, @query_string).results
+    @total_found = results.size
+
+    # if default search query doesn't find anything, use backup query
+    if (params[:q] == default_query) && results.size == 0
+      redirect_to action: 'index', q: backup_query and return
+    end
+
+
+    @result_list = []
+    kam_rows = 10
+    kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
+    if results && results.size > 0
+    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
+	end
+
 
     @enable_search_form = false #stop ora search form appearing
 
@@ -76,7 +95,7 @@ class FredDashboardController < ApplicationController
 
   def http_request(url, limit = 10)
 
-    raise ArgumentError, 'HTTP redirect too deep' if limit == 0
+    raise NoMemoryError, 'HTTP redirect too deep' if limit == 0
 
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
@@ -94,26 +113,6 @@ class FredDashboardController < ApplicationController
   end
 
 
-
-  def set_query
-    idx, query = 0, "*:*"
-    if session[:solr_query_params] && session[:solr_query_params].size > 0
-      session[:solr_query_params].each do |k, v|
-        field = Solrium.lookup(k.to_sym) #get solr field name
-        txt = v.gsub(%r{\s}, '+')
-        if idx > 0
-          query = "#{query} AND #{field}:#{txt}"
-        else
-          query = "#{field}:#{txt}"
-        end
-        idx = idx + 1
-      end
-    else
-      logger.warn ">>> SolrSearch#search, query_hash is nil or empty \
-            - defaulting to global search"
-    end
-    query
-  end
 
   # Creates a Hash where the key is the facet and the value is a Hash
   # containing the facet's constraints

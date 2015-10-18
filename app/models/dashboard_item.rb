@@ -1,7 +1,7 @@
 class DashboardItem
 
   attr_reader :title, :abstract, :creator, :status, :type, :depositor,
-              :reviewer, :date_published, :date_accepted, :id 
+    :reviewer, :date_published, :date_accepted, :id
 
   def initialize(solr_doc)
     @id = solr_doc.id
@@ -22,9 +22,9 @@ class DashboardItem
 
 
   def date
-    if  !self.date_published.empty?
+    if !self.date_published.empty?
       self.date_published
-    elsif  !self.date_accepted.empty?
+    elsif !self.date_accepted.empty?
       self.date_accepted
     else
       ""

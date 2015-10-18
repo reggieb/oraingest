@@ -22,4 +22,13 @@ class DashboardHelperTest < ActionView::TestCase
     assert_nil(hsh[:status!])
   end
 
+  test "should add facet value to query string" do
+  	# TODO:
+  end
+
+  test "should remove facet value from query string" do
+  	# TODO:
+  end
+
+
 end

@@ -36,6 +36,10 @@ class SolrDoc
     @creator ? @creator.join(',') : ""
   end
 
+  def contributor
+    @contributor ? @contributor.join(',') : ""
+  end  
+
   def status
     @status ? @status.first : ""
   end

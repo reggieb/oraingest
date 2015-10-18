@@ -48,6 +48,9 @@ class SolrDocTest < ActiveSupport::TestCase
     assert_equal 'bodl0933', @@solr_doc.depositor
   end
 
+  test "Contributor attribute set correctly" do
+    assert_equal 'bodl1087', @@solr_doc.contributor
+  end
 
   test "Current Reviewer attribute set correctly" do
     assert_equal 'bodl2421', @@solr_doc.current_reviewer
