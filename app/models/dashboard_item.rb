@@ -32,11 +32,10 @@ class DashboardItem
   end
 
   def date_type
+    dt = ""
     if !self.date_published.empty?
       dt = "published"
-    elsif self.date_published.empty? && self.date_published.empty?
-      dt = ""
-    elsif self.date_published.empty? && !self.date_published.empty?
+    elsif self.date_published.empty? && !self.date_accepted.empty?
       dt = "accepted"
     end
   end
