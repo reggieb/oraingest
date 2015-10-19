@@ -12,11 +12,10 @@ class FredDashboardController < ApplicationController
   before_filter :restrict_access_to_reviewers
 
   def index
-    @solr_connection ||= RSolr.connect url: ENV['url']
-    @solr_docs ||= [] #list if SolrDoc documents
+    @@solr_connection ||= RSolr.connect url: ENV['url']
+    @@solr_docs ||= [] #list if SolrDoc documents
 
-
-    total = @solr_connection.select({:rows => 0})["response"]["numFound"]
+    total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
     if total < 1
       #TODO: no Solr records, render error page
     end
@@ -36,7 +35,7 @@ class FredDashboardController < ApplicationController
         solr_hash = eval(response.body) 
         @facets = process_facets( solr_hash['facet_counts']['facet_fields'] )
         solr_hash['response']['docs'].each do |solr_doc|
-          @solr_docs << SolrDoc.new(solr_doc)
+          @@solr_docs << SolrDoc.new(solr_doc)
         end
       else
         # TODO: deal with error in accessing Solr
@@ -45,6 +44,7 @@ class FredDashboardController < ApplicationController
 
     default_query = "status=Claimed,creator=#{current_user.email}"
     backup_query = "status!=Claimed"
+
 
 
 	if params[:search]
@@ -58,7 +58,7 @@ class FredDashboardController < ApplicationController
     end
 
 	results = params[:search] ? do_global_search(params[:search]) : 
-			QueryStringSearch.new(@solr_docs, @query_string).results
+			QueryStringSearch.new(@@solr_docs, @query_string).results
 
     @total_found = results.size
 
@@ -86,7 +86,7 @@ class FredDashboardController < ApplicationController
     page = 1 unless params[:page]
 
 
-    @solr_connection.paginate page, 10, "select", params: {
+    @@solr_connection.paginate page, 10, "select", params: {
       q: query,
       facet: true,
       'facet.field' => SolrFacets.values,
@@ -101,7 +101,7 @@ class FredDashboardController < ApplicationController
   	joined_results = []
     Solrium.each do |nice_name, solr_name|
       qs= "#{nice_name.to_s.downcase}=#{search_term}"
-	  rs = QueryStringSearch.new(@solr_docs, qs).results
+	  rs = QueryStringSearch.new(@@solr_docs, qs).results
 	  joined_results.concat( rs ) if rs.size > 0
 	end
   	joined_results
