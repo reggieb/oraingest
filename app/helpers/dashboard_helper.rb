@@ -26,22 +26,44 @@ module DashboardHelper
   end
 
   def add_to_query(query_term)
-    sanitised_hash = sanitise_params_query_hash
-
-    if sanitised_hash.has_key? query_term.keys.first.to_s
-      sanitised_hash
+    # CGI::parse doesn't grok commas as separators
+    # so replace them with &
+    query_string = ""
+    if params[:q]
+      query_hash = query_string_to_hash( params[:q] )
+      unless query_hash.has_key? query_term.keys.first
+        query_hash.merge!(query_term)
+        # now convert back to query string
+        query_string = query_hash_to_string(query_hash)
+      end
     else
-      sanitised_hash.merge(query_term)
+      query_string = query_term.to_query.gsub('&', ',')
     end
+    query_string
+  end
 
+  def query_string_to_hash(qs)
+    qs = qs.gsub(',', '&')
+    query_hash = Hash[CGI.parse(qs).map {|key,values| [key.to_sym, values[0]||true]}]
+  end
+
+  def query_hash_to_string(qh)
+    qh.to_query.gsub('&', ',')
   end
 
 
-  def remove_query(key)
-    key = key.gsub(%r{[\[\]]}, '')
-    sanitised_hash = sanitise_params_query_hash
-    sanitised_hash.delete(key)
-    sanitised_hash
+  def remove_from_query(key)
+  	key = key.to_s.chomp('!').to_sym
+  	query_string = ""
+    if params[:q]
+      query_hash = query_string_to_hash( params[:q] )
+      query_hash.delete(key)
+      # now convert back to query string
+      query_string = query_hash_to_string(query_hash)
+    else
+      #TODO: if there are no params, this shouldn't be called
+    end
+    query_string
   end
 
   def sanitise_params_query_hash

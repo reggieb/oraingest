@@ -311,6 +311,7 @@ GEM
       nokogiri (~> 1.6.0)
       rails (>= 3.2.13, < 5.0)
       rest-client
+    query_string_search (0.0.7)
     rack (1.5.5)
     rack-contrib (1.4.0)
       git-version-bump (~> 0.15)
@@ -553,6 +554,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   qa
+  query_string_search
   rails (= 4.0.3)
   rspec-rails (~> 3.2.0)
   rt-client

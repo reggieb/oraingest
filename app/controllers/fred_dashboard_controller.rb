@@ -1,3 +1,4 @@
+require "net/http"
 
 # FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
@@ -11,67 +12,73 @@ class FredDashboardController < ApplicationController
   before_filter :restrict_access_to_reviewers
 
   def index
-    @solr_connection ||= RSolr.connect url: ENV['url']
-    @default_search = {status: 'Claimed', creator: current_user.email}
-    session[:solr_query_params] ||= {}
-    #if no search or query params are passed, then do default search
-    if (!params.keys.include? 'search') && (!params.keys.include? 'query')
-      redirect_to action: 'index', query: @default_search.to_query, state: 'initial_search' and return
-      # session[:solr_query_params][:creator] = current_user.email
-    elsif (params.keys.include? 'search') && (!params.keys.include? 'query')
-      # user doing a full text search
-      full_text_query = full_search_query(params[:search])
-      response = do_search(full_text_query)
+    @@solr_connection ||= RSolr.connect url: ENV['url']
+    @@solr_docs ||= [] #list if SolrDoc documents
 
-    elsif (!params.keys.include? 'search') && (params.keys.include? 'query')
-      query = build_query( CGI.parse(params[:query]) )
-      response = do_search(query)
+    total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
+    if total < 1
+      #TODO: no Solr records, render error page
     end
 
+    rows  = 100 # rows to retrieve at a time
 
-    @enable_search_form = false #stop ora search form appearing
-    @number_items_found =  response['response']['numFound']
 
-    if @number_items_found > 0
-
-      @result_list = response['response']['docs']
-      @facets = process_facets( response['facet_counts']['facet_fields'] )
-    else
-      if params[:state] == 'initial_search'
-        redirect_to action: 'index', query: {status: 'NOT Claimed'}.to_query and return
-        # response = do_search("NOT MediatedSubmission_status_ssim:Claimed")
-        # params[:query] = nil
-        # @result_list = response['response']['docs']
-        # @facets = process_facets( response['facet_counts']['facet_fields'] )
+    pages = (total.to_f / rows.to_f).ceil # round up
+    (1..pages).each do |page|
+      start = (page-1) * rows
+      query_string = "/select?q=*%3A*&rows=#{rows}&start=#{start}&wt=ruby"
+      # need to remove # from url, or it won't work
+      sanitised_url = ENV['url'].gsub(%r{/#}, '')
+      response = http_request(sanitised_url + query_string)
+      if response.is_a? Net::HTTPSuccess 
+        #body is a Hash wrapped in a String, so eval will give us the Hash
+        solr_hash = eval(response.body) 
+        @facets = process_facets( solr_hash['facet_counts']['facet_fields'] )
+        solr_hash['response']['docs'].each do |solr_doc|
+          @@solr_docs << SolrDoc.new(solr_doc)
+        end
       else
-        # TODO: deal with error
+        # TODO: deal with error in accessing Solr
       end
     end
 
-  end
+    default_query = "status=Claimed,creator=#{current_user.email}"
+    backup_query = "status!=Claimed"
 
-  def build_query(query_terms)
-    idx, query = 0, "*:*"
-    query_terms.each do |k, v|
-      trimmed_key = k.gsub(%r{[\[\]]}, '') # remove array notation, if present
-      field = Solrium.lookup(trimmed_key.to_sym) #get solr field name
-      if v.size == 1
-        if v.first.include? "NOT "
-          query = "NOT #{field}:#{v.first[4..-1]}"
-        else
-          txt = v.first.gsub(%r{\s}, '+')
-          query =  idx > 0 ? "#{query} AND #{field}:#{txt}" : "#{field}:#{txt}"
-          idx = idx + 1
-        end
-      elsif v.size > 1
-        v.each do |value|
-          #TODO: deal with multi-value fields
-        end
-      end
+
+
+	if params[:search]
+		# just prevent the query string from being set
+    elsif params[:q] && !params[:q].empty?
+      @query_string = params[:q]
+    elsif params[:q] && params[:q].empty?  
+    	@query_string = 'all'
+    elsif !params[:q]
+      redirect_to action: 'index', q: default_query and return
     end
-    query
-  end
 
+	results = params[:search] ? do_global_search(params[:search]) : 
+			QueryStringSearch.new(@@solr_docs, @query_string).results
+
+    @total_found = results.size
+
+    # if default search query doesn't find anything, use backup query
+    if (params[:q] == default_query) && results.size == 0
+      redirect_to action: 'index', q: backup_query and return
+    end
+
+
+    @result_list = []
+    kam_rows = 10
+    kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
+    if results && results.size > 0
+    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
+	end
+
+
+    @disable_search_form = true #stop ora search form appearing
+
+  end
 
 
   def do_search(query)
@@ -79,7 +86,7 @@ class FredDashboardController < ApplicationController
     page = 1 unless params[:page]
 
 
-    @solr_connection.paginate page, 10, "select", params: {
+    @@solr_connection.paginate page, 10, "select", params: {
       q: query,
       facet: true,
       'facet.field' => SolrFacets.values,
@@ -90,25 +97,36 @@ class FredDashboardController < ApplicationController
   end
 
 
-  def set_query
-    idx, query = 0, "*:*"
-    if session[:solr_query_params] && session[:solr_query_params].size > 0
-      session[:solr_query_params].each do |k, v|
-        field = Solrium.lookup(k.to_sym) #get solr field name
-        txt = v.gsub(%r{\s}, '+')
-        if idx > 0
-          query = "#{query} AND #{field}:#{txt}"
-        else
-          query = "#{field}:#{txt}"
-        end
-        idx = idx + 1
-      end
-    else
-      logger.warn ">>> SolrSearch#search, query_hash is nil or empty \
-            - defaulting to global search"
-    end
-    query
+  def do_global_search( search_term )
+  	joined_results = []
+    Solrium.each do |nice_name, solr_name|
+      qs= "#{nice_name.to_s.downcase}=#{search_term}"
+	  rs = QueryStringSearch.new(@@solr_docs, qs).results
+	  joined_results.concat( rs ) if rs.size > 0
+	end
+  	joined_results
   end
+
+  def http_request(url, limit = 10)
+
+    raise NoMemoryError, 'HTTP redirect too deep' if limit == 0
+
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    response = http.request(request)
+
+    if response.is_a? Net::HTTPSuccess 
+      response
+    elsif response.is_a? Net::HTTPRedirection 
+      http_request(response['location'], limit - 1)
+    else
+      response.error!
+    end    
+  end
+
+
 
   # Creates a Hash where the key is the facet and the value is a Hash
   # containing the facet's constraints

@@ -33,9 +33,16 @@ OraHydra::Application.routes.draw do
       end
     end
   end
-  
+
   get 'deposit_licence', to: 'static#deposit_licence'
   get 'data_deposit_licence', to: 'static#data_deposit_licence'
+
+
+  concern :paginatable do
+    get '(page/:page)', :action => :index, :on => :collection, :as => ''
+  end
+
+  resources :dash, :concerns => :paginatable
 
   resources 'reviewer_dashboard', :only=>:index do
     collection do
@@ -87,7 +94,7 @@ OraHydra::Application.routes.draw do
     end
   end
 
-  #mount Hydra::Collections::Engine => '/' 
+  #mount Hydra::Collections::Engine => '/'
   mount Sufia::Engine => '/'
 
   # The priority is based upon order of creation:
@@ -104,7 +111,7 @@ OraHydra::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
- # Sample resource route with options:
+  # Sample resource route with options:
   #   resources :products do
   #     member do
   #       get 'short'

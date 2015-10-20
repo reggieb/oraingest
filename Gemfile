@@ -95,3 +95,4 @@ group :test do
 end
 
 gem 'god'
+gem 'query_string_search'
