@@ -157,7 +157,9 @@
           <%= render partial: "admin_fields_edit", :locals => { :f => f, :thesis => @thesis } %>
         </div>
         <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
-        <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
+        <% if can? :review, :all %>
+          <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
+        <% end %>
       </div>
 
         <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
