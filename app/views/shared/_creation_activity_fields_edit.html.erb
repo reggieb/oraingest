@@ -49,12 +49,23 @@
                 </div>
                 </label>
 
+                <% if @model == "thesis" %>
+                  <% email_required = true %>
+                <% else %>
+                  <% email_required = false %>
+                <% end %>
+
                 <label>
                 <div class="fieldset">
-                  <p><span class="small">Email</span>
-                    <%= f_c.text_field :email, :value => c.agent[0].email.first, id: "creatorEmail%d"%c_index, :class=>"creatorEmail", data: {"progress" => "documentation"} %>
-                     <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Creator information", :tipDescription =>"Please provide a sustainable email address for the thesis author, overwriting the auto-complete information as necessary, so that ORA staff have a valid contact once any University of Oxford credentials expire" } %>
+                  <p>
+                  <% if email_required  %>
+                     <span class="small reqlabel">Email</span>
+                  <% else %>
+                    <span class="small">Email</span>
+                  <% end %>
 
+                  <%= f_c.text_field :email, :required => email_required, :value => c.agent[0].email.first, id: "creatorEmail%d"%c_index, :class=>"creatorEmail", data: {"progress" => "documentation"} %>
+                  <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Creator information", :tipDescription =>"Please provide a sustainable email address for the thesis author, overwriting the auto-complete information as necessary, so that ORA staff have a valid contact once any University of Oxford credentials expire" } %>
                   </p>
                   </div>
                 </label>
